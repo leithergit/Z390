@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Evolis_Avansia>
+  <ErrorCode value ="0000">
+    <ErrorDescription value ="successful"/>
+  </ErrorCode>
+  <ErrorCode value ="0001">
+    <ErrorDescription value ="already connected to the printer"/>
+  </ErrorCode>
+  <ErrorCode value ="0002">
+    <ErrorDescription value ="unsupported port"/>
+  </ErrorCode>
+  <ErrorCode value ="0003">
+    <ErrorDescription value ="error while connecting to the printer"/>
+  </ErrorCode>
+  <ErrorCode value ="0004">
+    <ErrorDescription value ="not connected to the printer, call Print_Open() first"/>
+  </ErrorCode>
+  <ErrorCode value ="0005">
+    <ErrorDescription value ="action timeout"/>
+  </ErrorCode>
+  <ErrorCode value ="0006">
+    <ErrorDescription value ="internal error"/>
+  </ErrorCode>
+  <ErrorCode value ="0007">
+    <ErrorDescription value ="feature not implemented"/>
+  </ErrorCode>
+  <ErrorCode value ="0008">
+    <ErrorDescription value ="unknown mag method"/>
+  </ErrorCode>
+  <ErrorCode value ="0009">
+    <ErrorDescription value ="unsupported barcode"/>
+  </ErrorCode>
+</Evolis_Avansia>

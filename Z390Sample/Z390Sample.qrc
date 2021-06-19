@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>iso.bmp</file>
+    </qresource>
+</RCC>
