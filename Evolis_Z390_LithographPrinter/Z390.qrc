@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>iso.bmp</file>
+        <file>simsun.ttc</file>
     </qresource>
 </RCC>

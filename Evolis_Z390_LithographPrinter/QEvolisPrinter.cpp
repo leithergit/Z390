@@ -23,11 +23,20 @@
 #include <QDir>
 #include <QApplication>
 #include <qglobal.h>
+#include <QTextCodec>
 #include "evolis.h"
 #include "android.h"
 #include "evo-printers.h"
 #include "QEvolisPrinter.h"
+#include "CVText_CN.h"
 
+#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc/imgproc_c.h>
+using namespace cv;
 
 struct BMP_INFOHDR
 {
@@ -369,6 +378,13 @@ QEvolisPrinter::QEvolisPrinter()
     bRunning = true;
     pThread = new thread(&QEvolisPrinter::run,this);
     this_thread::sleep_for(std::chrono::milliseconds(250));
+    ExtractIso();
+    ExtractFont();
+    strOverlayer = "/mnt/internal_sd/Z390/iso.bmp";
+}
+
+void QEvolisPrinter::ExtractIso()
+{
     QFileInfo fi("/mnt/internal_sd/Z390/iso.bmp");
     if (fi.isFile())
     {
@@ -394,6 +410,30 @@ QEvolisPrinter::QEvolisPrinter()
     strOverlayer = "/mnt/internal_sd/Z390/iso.bmp";
 }
 
+void QEvolisPrinter::ExtractFont()
+{
+    QFileInfo fi("/mnt/internal_sd/Z390/simsun.ttc");
+    if (fi.isFile())
+    {
+        RunlogF("File /mnt/internal_sd/Z390/simsun.ttc has already exist!\n");
+        return ;
+    }
+    RunlogF("/mnt/internal_sd/Z390/simsun.ttc not exist,try to create...!\n");
+    QFileInfo fidir("/mnt/internal_sd/Z390");
+    if (!fidir.isDir())
+    {
+        RunlogF("Directory /mnt/internal_sd/Z390/ not exist,try to create...!\n");
+        QDir dir;
+        if(!dir.mkpath("/mnt/internal_sd/Z390/"))
+        {
+            RunlogF("Failed in creating directory /mnt/internal_sd/Z390 !\n");
+            return ;
+        }
+    }
+    RunlogF("Try to create file /mnt/internal_sd/Z390/simsun.ttc!\n");
+    if (!QFile::copy(":/simsun.ttc","/mnt/internal_sd/Z390/simsun.ttc"))
+        RunlogF("Failed in creating file /mnt/internal_sd/Z390/simsun.ttc!\n");
+}
 QEvolisPrinter::~QEvolisPrinter()
 {
     Funclog();
@@ -1191,18 +1231,203 @@ int QEvolisPrinter::SetDarkTextRegion(int nLeft, int nTop, int nRight, int nBott
 //    }
 }
 
+//int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVector)
+//{
+//    Funclog();
+//    if (!m_pPrinter)
+//        return 1;
+
+//     QFileInfo fipic(inPicInfo.picpath.c_str());
+//     if (!fipic.isFile() && !inTextVector.size())
+//     {
+//         RunlogF("There is no any content to print!\n")
+//         return 1;
+//     }
+
+//    RunlogF("Try to evolis_print_init.\n");
+//    if (evolis_print_init((evolis_t*)m_pPrinter))
+//    {
+//        RunlogF("evolis_print_init failed.\n");
+//        return 1;
+//    }
+//    RunlogF("evolis_print_init Succeed.\n");
+//    QImage Convas(1024, 650, QImage::Format_RGB888);
+//    Convas.fill(Qt::white);
+//    QPainter painter(&Convas);
+//    painter.setCompositionMode(QPainter::CompositionMode_Source);
+//    QImage FileImage;
+
+//    RunlogF("Try to load file %s.\n",inPicInfo.picpath.c_str());
+//    if (FileImage.load(QString::fromStdString( inPicInfo.picpath)))
+//    {
+//        RunlogF("Source  Graph:%s\txPos = %.1f\tyPos = %.1f\tAngle = %d.\n",inPicInfo.picpath.c_str(),inPicInfo.fxPos,inPicInfo.fyPos,inPicInfo.nAngle);
+//        RunlogF("Convert Graph:%s\txPos = %.1f\tyPos = %.1f\tAngle = %d.\n",inPicInfo.picpath.c_str(),MM2Pixel(inPicInfo.fxPos),MM2Pixel(inPicInfo.fyPos),inPicInfo.nAngle);
+
+//        painter.save();
+//        painter.translate(nCardWidth/2,nCardHeight/2);
+//        painter.rotate(inPicInfo.nAngle);
+//        painter.translate(-nCardWidth/2,-nCardHeight/2);
+//        painter.drawImage(QRect(MM2Pixel(inPicInfo.fxPos),MM2Pixel(inPicInfo.fyPos),MM2Pixel(inPicInfo.fWidth),MM2Pixel(inPicInfo.fHeight)),FileImage);
+//        painter.restore();
+//    }
+//    else
+//        RunlogF("Failed in load file :%s.\n",inPicInfo.picpath.c_str());
+
+//    for (auto var : inTextVector)
+//    {
+//        QString imageText = QString::fromStdString(var->sText);
+//        QFont font(var->pFontName.c_str());
+//        //设置显示字体的大小
+//        font.setPixelSize(MM2Pixel(var->nFontSize));
+//        //1-常规；2-粗体；4-斜体；8-黑体
+//        if (var->nFontStyle &0x02)
+//            font.setBold(true);
+//        if (var->nFontStyle & 0x04)
+//            font.setItalic(true);
+
+//        RunlogF("Font Name:%s.\n",var->pFontName.c_str());
+//        QFontMetrics fm(font);
+//        auto TextRect = fm.boundingRect(imageText);
+//        painter.setFont(font);
+//        QPen pen = painter.pen();
+
+//        pen.setColor(QColor(Value_R(var->nColor),Value_G(var->nColor),Value_B(var->nColor)));
+//        painter.setPen(pen);
+//        RunlogF("Source Text:%s\n",var->sText.c_str());
+//        //RunlogF("Source:xPos = %.1f\tyPos = %.1f\tAngle = %d\nConvert Text:%s\txPos = %.1f\tyPos = %.1f\tAngle = %d.\n.\n",
+//        //        (var->fxPos),(var->fyPos),var->nAngle,
+//        //        MM2Pixel(var->fxPos),MM2Pixel(var->fyPos),var->nAngle);
+
+//        painter.save();
+//        painter.translate(nCardWidth/2,nCardHeight/2);
+//        painter.rotate(var->nAngle);
+//        painter.translate(-nCardWidth/2,-nCardHeight/2);
+//        painter.drawText(QRectF(MM2Pixel(var->fxPos), MM2Pixel(var->fyPos), TextRect.width(), TextRect.height()), Qt::AlignLeft | Qt::AlignTop, imageText);
+//        int nTop = (int)roundf(MM2Pixel(var->fxPos));
+//        int nLeft = (int)roundf(MM2Pixel(var->fyPos));
+
+//        SetDarkTextRegion(nLeft,nTop, nLeft + TextRect.width(),nTop + TextRect.height());
+
+//        painter.restore();
+//    }
+//    if (strPreviewFile.size())
+//        Convas.save(strPreviewFile.c_str());
+//    //Convas.save("/storage/emulated/0/MagazineUnlock/PrintSample.bmp");
+//    // /storage/emulated/0/MagazineUnlock
+
+//    char *pFileBuffer = nullptr;
+//    int nBufferSize = Convert_dib(&pFileBuffer,Convas);
+//    if (!nBufferSize)
+//    {
+//        if (pFileBuffer)
+//            delete []pFileBuffer;
+//        RunlogF("failed in  Convert_dib:%s.\n");
+//        return 1;
+//    }
+
+//    if (strGRibbonType.size())
+//    {
+//        RunlogF("Try to evolis_print_set_option(GRibbonType,%s).\n",strGRibbonType.c_str());
+//        if (evolis_print_set_option(m_pPrinter, "GRibbonType", strGRibbonType.c_str()))
+//        {
+//            RunlogF("Failed in evolis_print_set_option(GRibbonType,%s).\n",strGRibbonType.c_str());
+//            return 1;
+//        }
+//        RunlogF("evolis_print_set_option(GRibbonType,%s) Succeed.\n",strGRibbonType.c_str());
+//    }
+
+////    if (strIFDarkLevelValue.size())
+////    {
+////        RunlogF("Try to evolis_print_set_option(IFDarkLevelValue,%s).\n",strIFDarkLevelValue.c_str());
+////        if (evolis_print_set_option(m_pPrinter, "IFDarkLevelValue", strIFDarkLevelValue.c_str()))
+////        {
+////            RunlogF("Failed in evolis_print_set_option(IFDarkLevelValue,%s).\n",strIFDarkLevelValue.c_str());
+////            return 1;
+////        }
+////        RunlogF("evolis_print_set_option(IFDarkLevelValue,%s) Succeed.\n",strIFDarkLevelValue.c_str());
+////    }
+
+//    strOverlayer = "/mnt/internal_sd/Z390/iso.bmp";
+//    QFileInfo fi(strOverlayer.c_str());
+//    if (!fi.isFile())
+//    {
+//        RunlogF("Can't open file %s.\n",strOverlayer.c_str());
+//        return 1;
+//    }
+//    RunlogF("Try to evolis_print_set_option(FOverlayManagement,BMPVARNISH).\n");
+//    if (evolis_print_set_option(m_pPrinter,"FOverlayManagement", "BMPVARNISH"))
+//    {
+//        RunlogF("Failed in evolis_print_set_option(FOverlayManagement,BMPVARNISH).\n");
+//        return 1;
+//    }
+//    RunlogF("evolis_print_set_option(FOverlayManagement,BMPVARNISH) Succeed.\n");
+
+//    RunlogF("Try to evolis_print_set_option(IFOverlayCustom,%s).\n",strOverlayer.c_str());
+//    if (evolis_print_set_option(m_pPrinter,"IFOverlayCustom",strOverlayer.c_str()))
+//    {
+//        RunlogF("Failed in evolis_print_set_option(FOverlayManagement,BMPVARNISH).\n",strOverlayer.c_str());
+//        return 1;
+//    }
+//    RunlogF("evolis_print_set_option(IFOverlayCustom,%s) Succeed.\n",strOverlayer.c_str());
+
+//    if (evolis_print_set_imageb(m_pPrinter, evolis_face_t::EVOLIS_FA_FRONT, pFileBuffer,nBufferSize))
+//    {
+//        RunlogF("evolis_print_set_imageb failed:%s.\n",inPicInfo.picpath.c_str());
+//        return 1;
+//    }
+
+//    RunlogF("Try to evolis_print_exec.\n");
+//    evolis_print_exec((evolis_t*)m_pPrinter);
+//    int             printed = 0;
+//    evolis_status_t es;
+//    auto tNow = system_clock::now();
+//    auto tLast = tNow;
+//    while (!printed)
+//    {
+//        if (evolis_status(m_pPrinter, &es) != 0)
+//        {
+//            RunlogF("Error reading printer status\n");
+//            return 0;
+//        }
+//        printed = !(es.information & EVOLIS_INF_BUSY);
+//        tNow = system_clock::now();
+//        auto tDeration = duration_cast<milliseconds>(tNow - tLast);
+//        if (tDeration.count() > 500)
+//        {
+//            tLast = tNow;
+//            RunlogF("Waiting printer task stop\n");
+//        }
+//    }
+//    return 0;
+//}
+
+Mat matRotateClockWise180(Mat src)//顺时针180
+{
+    if (src.empty())
+    {
+        qDebug() << "RorateMat src is empty!";
+    }
+
+    //0: 沿X轴翻转； >0: 沿Y轴翻转； <0: 沿X轴和Y轴翻转
+    flip(src, src, 0);// 翻转模式，flipCode == 0垂直翻转（沿X轴翻转），flipCode>0水平翻转（沿Y轴翻转），flipCode<0水平垂直翻转（先沿X轴翻转，再沿Y轴翻转，等价于旋转180°）
+    flip(src, src, 1);
+    return src;
+    //transpose(src, src);// 矩阵转置
+}
+
+
 int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVector)
 {
     Funclog();
     if (!m_pPrinter)
         return 1;
 
-     QFileInfo fipic(inPicInfo.picpath.c_str());
-     if (!fipic.isFile() && !inTextVector.size())
-     {
-         RunlogF("There is no any content to print!\n")
-         return 1;
-     }
+    QFileInfo fipic(inPicInfo.picpath.c_str());
+    if (!fipic.isFile() && !inTextVector.size())
+    {
+        RunlogF("There is no any content to print!\n")
+            return 1;
+    }
 
     RunlogF("Try to evolis_print_init.\n");
     if (evolis_print_init((evolis_t*)m_pPrinter))
@@ -1211,80 +1436,78 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVec
         return 1;
     }
     RunlogF("evolis_print_init Succeed.\n");
-    QImage Convas(1024, 650, QImage::Format_RGB888);
-    Convas.fill(Qt::white);
-    QPainter painter(&Convas);
-    painter.setCompositionMode(QPainter::CompositionMode_Source);
-    QImage FileImage;
+
+
+    Mat canvas(nCardHeight,nCardWidth,CV_8UC3,Scalar(255,255,255));
 
     RunlogF("Try to load file %s.\n",inPicInfo.picpath.c_str());
-    if (FileImage.load(QString::fromStdString( inPicInfo.picpath)))
-    {
-        RunlogF("Source  Graph:%s\txPos = %.1f\tyPos = %.1f\tAngle = %d.\n",inPicInfo.picpath.c_str(),inPicInfo.fxPos,inPicInfo.fyPos,inPicInfo.nAngle);
-        RunlogF("Convert Graph:%s\txPos = %.1f\tyPos = %.1f\tAngle = %d.\n",inPicInfo.picpath.c_str(),MM2Pixel(inPicInfo.fxPos),MM2Pixel(inPicInfo.fyPos),inPicInfo.nAngle);
 
-        painter.save();
-        painter.translate(nCardWidth/2,nCardHeight/2);
-        painter.rotate(inPicInfo.nAngle);
-        painter.translate(-nCardWidth/2,-nCardHeight/2);
-        painter.drawImage(QRect(MM2Pixel(inPicInfo.fxPos),MM2Pixel(inPicInfo.fyPos),MM2Pixel(inPicInfo.fWidth),MM2Pixel(inPicInfo.fHeight)),FileImage);
-        painter.restore();
+    Mat HeaderImage = imread(inPicInfo.picpath, IMREAD_ANYCOLOR);
+    if (!HeaderImage.data)
+    {
+         RunlogF("Failed in load file :%s.\n",inPicInfo.picpath.c_str());
+         return 1;
     }
-    else
-        RunlogF("Failed in load file :%s.\n",inPicInfo.picpath.c_str());        
+    Mat HeaderPrint;
+    resize(HeaderImage, HeaderPrint, Size(MM2Pixel(inPicInfo.fWidth) , MM2Pixel(inPicInfo.fHeight)), 0, 0, INTER_NEAREST);
+
+    Mat HeaderROI = canvas(Rect(MM2Pixel(inPicInfo.fxPos),MM2Pixel(inPicInfo.fyPos),MM2Pixel(inPicInfo.fWidth),MM2Pixel(inPicInfo.fHeight)));
+    HeaderPrint.copyTo(HeaderROI);
 
     for (auto var : inTextVector)
     {
-        QString imageText = QString::fromStdString(var->sText);       
-        QFont font(var->pFontName.c_str());
-        //设置显示字体的大小
-        font.setPixelSize(MM2Pixel(var->nFontSize));
-        //1-常规；2-粗体；4-斜体；8-黑体
-        if (var->nFontStyle &0x02)
-            font.setBold(true);
-        if (var->nFontStyle & 0x04)
-            font.setItalic(true);
+        RunlogF("Text = %s.\n",var->sText.c_str());
+        Mat FontROI = canvas(Rect(10, 280, 1000, 300));
+        IplImage FontImag= cvIplImage(FontROI);
+        CVText_CN cvTextCn("/mnt/internal_sd/Z390/simsun.ttc", MM2Pixel(var->nFontSize));
 
-        RunlogF("Font Name:%s.\n",var->pFontName.c_str());
-        QFontMetrics fm(font);
-        auto TextRect = fm.boundingRect(imageText);
-        painter.setFont(font);
-        QPen pen = painter.pen();
-
-        pen.setColor(QColor(Value_R(var->nColor),Value_G(var->nColor),Value_B(var->nColor)));
-        painter.setPen(pen);
-        RunlogF("Source Text:%s\n",var->sText.c_str());
-        //RunlogF("Source:xPos = %.1f\tyPos = %.1f\tAngle = %d\nConvert Text:%s\txPos = %.1f\tyPos = %.1f\tAngle = %d.\n.\n",
-        //        (var->fxPos),(var->fyPos),var->nAngle,
-        //        MM2Pixel(var->fxPos),MM2Pixel(var->fyPos),var->nAngle);
-
-        painter.save();
-        painter.translate(nCardWidth/2,nCardHeight/2);
-        painter.rotate(var->nAngle);
-        painter.translate(-nCardWidth/2,-nCardHeight/2);
-        painter.drawText(QRectF(MM2Pixel(var->fxPos), MM2Pixel(var->fyPos), TextRect.width(), TextRect.height()), Qt::AlignLeft | Qt::AlignTop, imageText);
-        int nTop = (int)roundf(MM2Pixel(var->fxPos));
-        int nLeft = (int)roundf(MM2Pixel(var->fyPos));
-
-        SetDarkTextRegion(nLeft,nTop, nLeft + TextRect.width(),nTop + TextRect.height());
-
-        painter.restore();
+        wchar_t szUnicode[1024] = {0};
+        mbstowcs(szUnicode,var->sText.c_str(),var->sText.size());
+        cvTextCn.putText(&FontImag, szUnicode, cvPoint(MM2Pixel(var->nFontSize), MM2Pixel(var->nFontSize)), cvScalar(CV_RGB(0, 0, 0)));
     }
+
     if (strPreviewFile.size())
-        Convas.save(strPreviewFile.c_str());
-    //Convas.save("/storage/emulated/0/MagazineUnlock/PrintSample.bmp");
-    // /storage/emulated/0/MagazineUnlock
+        imwrite(strPreviewFile.c_str(),canvas);
+    const char *szTempFile = "/mnt/internal_sd/Z390/PrintPreview.bmp";
+    if (inPicInfo.nAngle > 0)
+    {
+        //0: 沿X轴翻转； >0: 沿Y轴翻转； <0: 沿X轴和Y轴翻转
+        flip(canvas, canvas, 0);// 翻转模式，flipCode == 0垂直翻转（沿X轴翻转），flipCode>0水平翻转（沿Y轴翻转），flipCode<0水平垂直翻转（先沿X轴翻转，再沿Y轴翻转，等价于旋转180°）
+        flip(canvas, canvas, 1);
+    }
+    imwrite(szTempFile,canvas);
 
     char *pFileBuffer = nullptr;
-    int nBufferSize = Convert_dib(&pFileBuffer,Convas);
+    int nBufferSize = 0;
+    //Convert_dib(&pFileBuffer,Convas);
+//    if (!nBufferSize)
+//    {
+//        if (pFileBuffer)
+//            delete []pFileBuffer;
+//        RunlogF("failed in  Convert_dib:%s.\n");
+//        return 1;
+//    }
+    QFile filepic(szTempFile);
+    if (!filepic.open(QIODevice::ReadOnly))
+    {
+        RunlogF("Filed to in open file:%s.\n",szTempFile);
+        return 1;
+    }
+    nBufferSize = filepic.size();
     if (!nBufferSize)
     {
-        if (pFileBuffer)
-            delete []pFileBuffer;
-        RunlogF("failed in  Convert_dib:%s.\n");
+        RunlogF("File %s is Zero size.\n",szTempFile);
+        return 1;
+    }
+    pFileBuffer = new char [filepic.size()];
+    if (!pFileBuffer)
+    {
+        RunlogF("Insufficent memory in reading file :%s!\n",szTempFile);
         return 1;
     }
 
+    shared_ptr<char> AutoBuffer(pFileBuffer);
+    filepic.read(pFileBuffer,nBufferSize);
     if (strGRibbonType.size())
     {
         RunlogF("Try to evolis_print_set_option(GRibbonType,%s).\n",strGRibbonType.c_str());
@@ -1296,16 +1519,16 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVec
         RunlogF("evolis_print_set_option(GRibbonType,%s) Succeed.\n",strGRibbonType.c_str());
     }
 
-//    if (strIFDarkLevelValue.size())
-//    {
-//        RunlogF("Try to evolis_print_set_option(IFDarkLevelValue,%s).\n",strIFDarkLevelValue.c_str());
-//        if (evolis_print_set_option(m_pPrinter, "IFDarkLevelValue", strIFDarkLevelValue.c_str()))
-//        {
-//            RunlogF("Failed in evolis_print_set_option(IFDarkLevelValue,%s).\n",strIFDarkLevelValue.c_str());
-//            return 1;
-//        }
-//        RunlogF("evolis_print_set_option(IFDarkLevelValue,%s) Succeed.\n",strIFDarkLevelValue.c_str());
-//    }
+    //    if (strIFDarkLevelValue.size())
+    //    {
+    //        RunlogF("Try to evolis_print_set_option(IFDarkLevelValue,%s).\n",strIFDarkLevelValue.c_str());
+    //        if (evolis_print_set_option(m_pPrinter, "IFDarkLevelValue", strIFDarkLevelValue.c_str()))
+    //        {
+    //            RunlogF("Failed in evolis_print_set_option(IFDarkLevelValue,%s).\n",strIFDarkLevelValue.c_str());
+    //            return 1;
+    //        }
+    //        RunlogF("evolis_print_set_option(IFDarkLevelValue,%s) Succeed.\n",strIFDarkLevelValue.c_str());
+    //    }
 
     strOverlayer = "/mnt/internal_sd/Z390/iso.bmp";
     QFileInfo fi(strOverlayer.c_str());

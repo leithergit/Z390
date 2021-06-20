@@ -140,6 +140,9 @@ public:
     QEvolisPrinter();
     ~QEvolisPrinter();
 
+    void ExtractIso();
+    void ExtractFont();
+
     thread *pThread = nullptr;
     list<TaskPtr> listTask;
     mutex mtlistTask;
@@ -157,7 +160,7 @@ public:
     CardPostion     nCardPosition = Pos_NA;
     string  strOverlayer;
     string  strPreviewFile = "";
-    string  strGRibbonType = "RM_YMCKO";
+    string  strGRibbonType = "RC_YMCKO";
     string  strIFDarkLevelValue = "";
     void *m_pPrinter = nullptr;
     int  On_Print_Open(char *pPort, char *pPortParam, char *pszRcCode) ;
