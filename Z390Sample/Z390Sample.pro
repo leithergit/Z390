@@ -84,5 +84,11 @@ ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 RESOURCES += \
     Z390Sample.qrc
 
-ANDROID_EXTRA_LIBS = E:/AndroidWork/Evolis_Z390_LithographPrinter/Z390Sample/Z390/lib/armeabi-v7a/libdc_mobile_mate.so E:/AndroidWork/Evolis_Z390_LithographPrinter/Z390Sample/Z390/lib/armeabi-v7a/libdcrf32.so E:/AndroidWork/Evolis_Z390_LithographPrinter/Z390Sample/Z390/lib/armeabi-v7a/libevolis.so E:/AndroidWork/Evolis_Z390_LithographPrinter/Z390Sample/Z390/lib/armeabi-v7a/libEvolis_Z390_LithographPrinter_armeabi-v7a.so E:/AndroidWork/Evolis_Z390_LithographPrinter/Z390Sample/Z390/lib/armeabi-v7a/libwlt2bmp.so E:/AndroidWork/Evolis_Z390_LithographPrinter/Z390Sample/OpenCV/libs/libopencv_java4.so $$PWD/Fretype2/lib/libfreetyped.so
+ANDROID_EXTRA_LIBS = $$PWD/Z390/lib/armeabi-v7a/libdc_mobile_mate.so\
+                     $$PWD/Z390/lib/armeabi-v7a/libdcrf32.so\
+                     $$PWD/Z390/lib/armeabi-v7a/libevolis.so\
+                     $$PWD/Z390/lib/armeabi-v7a/libEvolis_Z390_LithographPrinter_armeabi-v7a.so\
+                     $$PWD/Z390/lib/armeabi-v7a/libwlt2bmp.so\
+                     $$PWD/OpenCV/libs/libopencv_java4.so\
+                     $$PWD/Fretype2/lib/libfreetyped.so
 

@@ -675,7 +675,7 @@
              <item>
               <widget class="QLineEdit" name="lineEdit_graphX">
                <property name="text">
-                <string>10</string>
+                <string>3</string>
                </property>
                <property name="placeholderText">
                 <string/>
@@ -695,7 +695,7 @@
              <item>
               <widget class="QLineEdit" name="lineEdit_graphY">
                <property name="text">
-                <string>5</string>
+                <string>11</string>
                </property>
                <property name="clearButtonEnabled">
                 <bool>false</bool>
@@ -746,7 +746,7 @@
              <item>
               <widget class="QLineEdit" name="lineEdit_graphH">
                <property name="text">
-                <string>30</string>
+                <string>25</string>
                </property>
                <property name="clearButtonEnabled">
                 <bool>false</bool>

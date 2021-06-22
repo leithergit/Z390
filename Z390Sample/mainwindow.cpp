@@ -728,9 +728,15 @@ void MainWindow::on_pushButton_PrinterSetText_clicked()
 
 ////    if (ui->checkBox_CheckPrinter->isChecked())
 ////    {
-        if (pPrinter->Print_PrintText(lTimeout,(char *)imageText.toStdString().c_str(),nAngle,x,y,"宋体",size,1,0,szRCode))
-            OutputMsg("Print_PrintText Failed!\n");
-        else
+      string strFont = "宋体";
+      int nFontSize = 8;
+      pPrinter->Print_PrintText(lTimeout,"姓名 测试用户",180,26,14,"宋体",8,1,0,szRCode);
+      pPrinter->Print_PrintText(lTimeout,"社会保障号码  123456789012345678",180,26,19,"宋体",8,1,0,szRCode);
+      pPrinter->Print_PrintText(lTimeout,"社会保障卡号  ABCDEFGHIJKLMN",180,26,24,"宋体",8,1,0,szRCode);
+      pPrinter->Print_PrintText(lTimeout,"发卡日期  2019年9月27日",180,26,29,"宋体",8,1,0,szRCode);
+//        if (pPrinter->Print_PrintText(lTimeout,(char *)imageText.toStdString().c_str(),nAngle,x,y,"宋体",size,1,0,szRCode))
+//            OutputMsg("Print_PrintText Failed!\n");
+//        else
             OutputMsg("Print_PrintText Succeed!\n");
 ////    }
 ////    else
