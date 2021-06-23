@@ -353,6 +353,49 @@ QApplication* pApp = nullptr;
 QEvolisPrinter::QEvolisPrinter()
 {
     Funclog();
+    mapFontSize.insert(make_pair("大特号",22.14));
+    mapFontSize.insert(make_pair("特号",18.97));
+
+    mapFontSize.insert(make_pair("初号",14.82));
+    mapFontSize.insert(make_pair("0",14.82));
+
+    mapFontSize.insert(make_pair("小初",12.70));
+
+    mapFontSize.insert(make_pair("一号",9.17));
+    mapFontSize.insert(make_pair("1",9.17));
+
+    mapFontSize.insert(make_pair("小一",8.47));
+
+    mapFontSize.insert(make_pair("二号",7.76));
+    mapFontSize.insert(make_pair("2",7.76));
+
+    mapFontSize.insert(make_pair("小二",6.35));
+
+    mapFontSize.insert(make_pair("三号",5.64));
+    mapFontSize.insert(make_pair("3",5.64));
+
+    mapFontSize.insert(make_pair("小三",5.29));
+
+    mapFontSize.insert(make_pair("四号",4.94));
+    mapFontSize.insert(make_pair("4",4.94));
+
+    mapFontSize.insert(make_pair("小四",4.23));
+
+    mapFontSize.insert(make_pair("五号",3.70));
+    mapFontSize.insert(make_pair("5",3.70));
+
+    mapFontSize.insert(make_pair("小五",3.18));
+
+    mapFontSize.insert(make_pair("六号",2.56));
+    mapFontSize.insert(make_pair("6",2.56));
+
+    mapFontSize.insert(make_pair("小六",2.29));
+
+    mapFontSize.insert(make_pair("七号",1.94));
+    mapFontSize.insert(make_pair("7",1.94));
+
+    mapFontSize.insert(make_pair("八号",1.76));
+    mapFontSize.insert(make_pair("8",1.76));
 
 //    const char *argv = "/data/app/com.example.crddriver_testtool-2/lib/arm/libEvolis_Z390_LithographPrinter_armeabi-v7a.so";
 //    int argc = 1;
@@ -660,29 +703,36 @@ int  QEvolisPrinter::On_Print_Open(char *pPort, char *pPortParam, char *pszRcCod
     RunlogF("Try to evolis_get_devices.\n");
     if (evolis_get_devices(&devices, 0, 0) <= 0)
     {
+        RunlogF("Failed in evolis_get_devices.\n");
         strcpy(pszRcCode, "0001");
         return  1;
     }
     RunlogF("evolis_get_devices Succeed.\n");
 
     RunlogF("Try to call evolis_open.\n");
+    //m_pPrinter = evolis_open2("usb:///dev/usb/lp0", EVOLIS_TY_EVOLIS);
     m_pPrinter = evolis_open(L"Evolis Zenius", false);
     if (!m_pPrinter)
     {
         strcpy(pszRcCode, "0001");
         return 1;
     }
-    const char *szCmd="Pcim;F";
-    char szReply[128] = {0};
+    const char *szCmd[]={"Pcim;F",      // 从卡箱进卡
+                         "Pcem;M",      // 从出卡口出卡
+                         "Pneab;E"};    // 打印结束后不出卡
+    char szReply[16] = {0};
 
-    RunlogF("Try to evolis_command(%s).\n",szCmd);
-    if (evolis_command(m_pPrinter,szCmd,strlen(szCmd),szReply,128) < 0)
+    for (int i = 0;i < 3;i ++)
     {
-        strcpy(pszRcCode, "0001");
-        RunlogF("Failed in evolis_command(%s):%s.\n",szCmd);
-        return 1;
+        RunlogF("Try to evolis_command(%s).\n",szCmd[i]);
+        if (evolis_command(m_pPrinter,szCmd[i],strlen(szCmd[i]),szReply,16) < 0)
+        {
+            RunlogF("Failed in evolis_command(%s).\n",szCmd[i]);
+            strcpy(pszRcCode, "0001");
+            return 1;
+        }
+        RunlogF("evolis_command(%s) Succeed,Reply:%s.\n",szCmd[i],szReply);
     }
-    RunlogF("evolis_command(%s) Succeed,Reply:%s.\n",szCmd,szReply);
 
     RunlogF("evolis_open Succeed.\n");
     strcpy(pszRcCode, "0000");
@@ -1055,17 +1105,8 @@ int  QEvolisPrinter::On_Print_StartPrint(long lTimeout, char *pszRcCode)
         strcpy(pszRcCode, "0001");
         return 1;
     }
-    char szReply[1024] = {0};
-    const char* szCommand =  "Pneab;E";
-    RunlogF("Try to evolis_command(%s).\n",szCommand);
-    if (evolis_command(m_pPrinter, szCommand, strlen(szCommand), szReply, sizeof(szReply)) < 0)
-    {
-        RunlogF("evolis_command(%s) Failed.\n",szCommand);
-        strcpy(pszRcCode, "0001");
-        return 1;
-    }
-    RunlogF("evolis_command(%s) Succeed,Reply:%s.\n",szCommand,szReply);
-    int ec = PrintCard(m_picInfo, m_textInfo);
+
+    int ec = PrintCard(m_picInfo, m_textInfo,lTimeout);
     if (ec)
     {
         strcpy(pszRcCode, "0001");
@@ -1098,16 +1139,16 @@ int QEvolisPrinter::GetDeviceState(void  *pPrinter, char* majorStatusValue, char
     return 0;
 }
 
-//   WORD fwDevice;		//打印机状态,   需要有0和1和2，0在线，1有卡在内部工作中，2离线,2021.06.09 13.21 胡杰 定义
-//   WORD fwMedia;		//介质状态，     0-无卡；2-卡在内部；2021.06.09 13.21 胡杰 定义
-//   WORD fwToner;		//平印色带状态,  0-FLLL;1-LOW，4-未知 2021.06.09 13.38 胡杰 定义
+//WORD fwDevice;		//打印机状态,    0-在线；   1-忙；     2-不在线；3-故障
+//WORD fwMedia;			//介质状态，     0-无卡；   1-卡在门口；2-卡在内部；3-卡在上电位，4-卡在闸门外；5-堵卡；6-卡片未知（根据硬件特性返回,必须支持有无卡检测）
+//WORD fwToner;			//平印色带状态,  0-FLLL;  1-LOW;2-OUT;3-NOTSUPP;4-UNKNOW
 /*
 Rlr;p的对应结果
 机器内没卡-->OK
 卡在打印位-->CARD
 卡在芯片位-->SMART CARD
 卡在非接位-->CONTACTLESS CARD
-
+// 出卡口
 Rse;M
 0.2x Volts是没卡
 4.9x Volts是有卡
@@ -1132,31 +1173,61 @@ int QEvolisPrinter::GetPrinterStatus(void  *pPrinter,int * RibbonNum,int *Device
     }
     RunlogF("ribbon.capacity = %d\tribbon.remaining = %d.\n",ribbon.capacity,ribbon.remaining);
     *RibbonNum= ribbon.capacity - ribbon.remaining;
-
-    char majorStatusValue[1024] = {0};
-    char minorStatusValue[1024] = {0};
-    RunlogF("Try to GetDeviceState.\n");
-    ec = GetDeviceState(pPrinter, majorStatusValue, minorStatusValue);
-    if (ec != 0)
-    {
-        RunlogF("Failed in GetDeviceState.\n");
-        return 1;
-    }
-
     // 无卡        majorStatusValue = READY         minorStatusValue = DEVICE_READY
     // 卡在机器内部  majorStatusValue = WARNING       minorStatusValue = DEVICE_BUSY
     // 卡在出卡口    majorStatusValue = WARNING       minorStatusValue = STDEVOLIS_DEF_CARD_ON_EJECT
     //             majorStatusValue = WARNING       minorStatusValue = EVOLIS_MI_STDEVOLIS_DEF_COVER_OPEN
-
-    //
+    char majorStatusValue[128] = {0};
+    char minorStatusValue[128] = {0};
+    if (GetDeviceState(m_pPrinter,majorStatusValue,minorStatusValue))
+    {
+        RunlogF("Failed in GetDeviceState.\n");
+        return 1;
+    }
     RunlogF("majorStatusValue = %s\tminorStatusValue = %s.\n",majorStatusValue,minorStatusValue);
     if (strcmp(minorStatusValue, "DEF_UNSUPPORTED_RIBBON") == 0)
-        *RibbonNum = -98;//是否离线
-
+        *RibbonNum = -98;
     if(strcmp(minorStatusValue,"PRINTER_OFFLINE") == 0)
         *Device = 2;//是否离线
 
+    const char *szCmd[]={"Rlr;p",      // 查询打印内部
+                         "Rse;M"};      // 查询出卡口
+    char szReply[16] = {0};
+
+    int nIdx = 0;
+    RunlogF("Try to evolis_command(%s).\n",szCmd[nIdx]);
+    if (evolis_command(m_pPrinter,szCmd[nIdx],strlen(szCmd[nIdx]),szReply,16) < 0)
+    {
+        RunlogF("Failed in evolis_command(%s).\n",szCmd[nIdx]);
+        return 1;
+    }
+    RunlogF("evolis_command(%s) Succeed,Reply:%s.\n",szCmd[nIdx],szReply);
+
+    char szReply2[16] = {0};
+    RunlogF("Try to evolis_command(%s).\n",szCmd[nIdx]);
+    if (evolis_command(m_pPrinter,szCmd[nIdx],strlen(szCmd[nIdx]),szReply2,16) < 0)
+    {
+        RunlogF("Failed in evolis_command(%s).\n",szCmd[nIdx]);
+        return 1;
+    }
+    RunlogF("evolis_command(%s) Succeed,Reply:%s.\n",szCmd[nIdx],szReply2);
     //Media 0-无卡；1-卡在门口；2-卡在内部；3-卡在上电位，4-卡在闸门外；5-堵卡；6-卡片未知（根据硬件特性返回,必须支持有无卡检测）
+    if (strcmp(szReply,"OK") == 0)
+    {
+        // 0.2x Volts是没卡
+        // 4.9x Volts是有卡
+        float fVolt = atof(szReply2);
+        if (fVolt >= 4.9)
+            *Media = 4;
+        else
+            *Media = 0;
+    }
+    else if (strcmp(szReply,"CARD") == 0||
+             strcmp(szReply,"CONTACTLESS CARD"))
+        *Media = 2;
+    else if (strcmp(szReply,"SMART CARD") == 0)
+        *Media = 3;
+
     evolis_status_t es;
     RunlogF("Try to evolis_status.\n");
     if (evolis_status(pPrinter, &es) != 0)
@@ -1172,24 +1243,24 @@ int QEvolisPrinter::GetPrinterStatus(void  *pPrinter,int * RibbonNum,int *Device
             RunlogF("evolis_status return exts[%d] = %d.\n",i, es.exts[i]);
     }
 
-    if (!strcmp(majorStatusValue,"READY") && !strcmp(minorStatusValue,"DEVICE_READY"))
-        *Media = 0;         // No card
-    else if (strcmp(majorStatusValue,"WARNING") == 0)
-    {
-        if (strcmp(minorStatusValue,"DEVICE_BUSY") == 0)
-        {
-            *Device = 1;    // 有卡在内部工作中
-            *Media = 2;     // card is internal
-        }
-        else if (strcmp(minorStatusValue,"STDEVOLIS_DEF_CARD_ON_EJECT") == 0)
-        {
-            *Media = 4;     // card is at exit
-        }
-        else
-            *Media = 6;
-    }
-    else
-         *Media = 6;
+//    if (!strcmp(majorStatusValue,"READY") && !strcmp(minorStatusValue,"DEVICE_READY"))
+//        *Media = 0;         // No card
+//    else if (strcmp(majorStatusValue,"WARNING") == 0)
+//    {
+//        if (strcmp(minorStatusValue,"DEVICE_BUSY") == 0)
+//        {
+//            *Device = 1;    // 有卡在内部工作中
+//            *Media = 2;     // card is internal
+//        }
+//        else if (strcmp(minorStatusValue,"STDEVOLIS_DEF_CARD_ON_EJECT") == 0)
+//        {
+//            *Media = 4;     // card is at exit
+//        }
+//        else
+//            *Media = 6;
+//    }
+//    else
+//         *Media = 6;
 
     return 0;
 }
@@ -1416,7 +1487,7 @@ Mat matRotateClockWise180(Mat src)//顺时针180
 }
 
 
-int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVector)
+int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVector,long nTimeout)
 {
     Funclog();
     if (!m_pPrinter)
@@ -1425,9 +1496,16 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVec
     QFileInfo fipic(inPicInfo.picpath.c_str());
     if (!fipic.isFile() && !inTextVector.size())
     {
-        RunlogF("There is no any content to print!\n")
-            return 1;
+        RunlogF("There is no any content to print!\n");
+        return 1;
     }
+// 此处待完善
+//    evolis_status_t es;
+//    if (evolis_status(m_pPrinter, &es) != 0)
+//    {
+//        RunlogF("Error reading printer status\n");
+//        return 0;
+//    }
 
     RunlogF("Try to evolis_print_init.\n");
     if (evolis_print_init((evolis_t*)m_pPrinter))
@@ -1437,6 +1515,18 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVec
     }
     RunlogF("evolis_print_init Succeed.\n");
 
+    const char *szCmd[]={"Pneab;A;0","Pneab;A;1"};
+    char szReply[16] = {0};
+    int nIdx = 0;
+
+    RunlogF("Try to evolis_command(%s).\n",szCmd[nIdx]);
+    if (evolis_command(m_pPrinter,szCmd[nIdx],strlen(szCmd[nIdx]),szReply,16) < 0)
+    {
+        RunlogF("Failed in evolis_command(%s):%s.\n",szCmd[nIdx]);
+        return 1;
+    }
+    RunlogF("evolis_command(%s) Succeed,Reply:%s.\n",szCmd[nIdx],szReply);
+    nIdx++;
 
     Mat canvas(nCardHeight,nCardWidth,CV_8UC3,Scalar(255,255,255));
 
@@ -1456,14 +1546,23 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVec
 
     for (auto var : inTextVector)
     {
-        RunlogF("Text = %s.\n",var->sText.c_str());
-        Mat FontROI = canvas(Rect(10, 280, 1000, 300));
+        RunlogF("Text = %s,FontSize = %d,xPos = %.02f,yPos = %.2f.\n",var->sText.c_str(),var->nFontSize);
+        Mat FontROI = canvas(Rect(MM2Pixel(var->fxPos), MM2Pixel(var->fyPos),nCardWidth -MM2Pixel(var->fxPos) - 5, nCardHeight-MM2Pixel(var->fyPos) - 5));
         IplImage FontImag= cvIplImage(FontROI);
-        CVText_CN cvTextCn("/mnt/internal_sd/Z390/simsun.ttc", MM2Pixel(var->nFontSize));
+        string strFontSize = std::to_string(var->nFontSize);
+        auto itFind = mapFontSize.find(strFontSize);
+        if (itFind == mapFontSize.end())
+        {
+            RunlogF("Invliad font size = %d,skip text:%s.\n",var->nFontSize,var->sText.c_str());
+            continue;
+        }
+        int nPixelSize = (int)round(MM2Pixel(itFind->second));
+        RunlogF("Text = %s,mmFontSize = %.2f, FontPixelSize = %d.\n",var->sText.c_str(),itFind->second,nPixelSize);
+        CVText_CN cvTextCn("/mnt/internal_sd/Z390/simsun.ttc", MM2Pixel(itFind->second));
 
         wchar_t szUnicode[1024] = {0};
         mbstowcs(szUnicode,var->sText.c_str(),var->sText.size());
-        cvTextCn.putText(&FontImag, szUnicode, cvPoint(MM2Pixel(var->nFontSize), MM2Pixel(var->nFontSize)), cvScalar(CV_RGB(0, 0, 0)));
+        cvTextCn.putText(&FontImag, szUnicode, cvPoint(0,nPixelSize), cvScalar(CV_RGB(0, 0, 0)));
     }
 
     if (strPreviewFile.size())
@@ -1477,37 +1576,21 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVec
     }
     imwrite(szTempFile,canvas);
 
-    char *pFileBuffer = nullptr;
-    int nBufferSize = 0;
-    //Convert_dib(&pFileBuffer,Convas);
-//    if (!nBufferSize)
-//    {
-//        if (pFileBuffer)
-//            delete []pFileBuffer;
-//        RunlogF("failed in  Convert_dib:%s.\n");
-//        return 1;
-//    }
-    QFile filepic(szTempFile);
-    if (!filepic.open(QIODevice::ReadOnly))
+    strOverlayer = "/mnt/internal_sd/Z390/iso.bmp";
+    QFileInfo fi(strOverlayer.c_str());
+    if (!fi.isFile())
     {
-        RunlogF("Filed to in open file:%s.\n",szTempFile);
+        RunlogF("Can't open file %s.\n",strOverlayer.c_str());
         return 1;
     }
-    nBufferSize = filepic.size();
-    if (!nBufferSize)
+    RunlogF("Try to evolis_print_set_option(IFOverlayCustom,%s).\n",strOverlayer.c_str());
+    if (evolis_print_set_option(m_pPrinter,"IFOverlayCustom",strOverlayer.c_str()))
     {
-        RunlogF("File %s is Zero size.\n",szTempFile);
+        RunlogF("Failed in evolis_print_set_option(FOverlayManagement,BMPVARNISH).\n",strOverlayer.c_str());
         return 1;
     }
-    pFileBuffer = new char [filepic.size()];
-    if (!pFileBuffer)
-    {
-        RunlogF("Insufficent memory in reading file :%s!\n",szTempFile);
-        return 1;
-    }
+    RunlogF("evolis_print_set_option(IFOverlayCustom,%s) Succeed.\n",strOverlayer.c_str());
 
-    shared_ptr<char> AutoBuffer(pFileBuffer);
-    filepic.read(pFileBuffer,nBufferSize);
     if (strGRibbonType.size())
     {
         RunlogF("Try to evolis_print_set_option(GRibbonType,%s).\n",strGRibbonType.c_str());
@@ -1519,24 +1602,6 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVec
         RunlogF("evolis_print_set_option(GRibbonType,%s) Succeed.\n",strGRibbonType.c_str());
     }
 
-    //    if (strIFDarkLevelValue.size())
-    //    {
-    //        RunlogF("Try to evolis_print_set_option(IFDarkLevelValue,%s).\n",strIFDarkLevelValue.c_str());
-    //        if (evolis_print_set_option(m_pPrinter, "IFDarkLevelValue", strIFDarkLevelValue.c_str()))
-    //        {
-    //            RunlogF("Failed in evolis_print_set_option(IFDarkLevelValue,%s).\n",strIFDarkLevelValue.c_str());
-    //            return 1;
-    //        }
-    //        RunlogF("evolis_print_set_option(IFDarkLevelValue,%s) Succeed.\n",strIFDarkLevelValue.c_str());
-    //    }
-
-    strOverlayer = "/mnt/internal_sd/Z390/iso.bmp";
-    QFileInfo fi(strOverlayer.c_str());
-    if (!fi.isFile())
-    {
-        RunlogF("Can't open file %s.\n",strOverlayer.c_str());
-        return 1;
-    }
     RunlogF("Try to evolis_print_set_option(FOverlayManagement,BMPVARNISH).\n");
     if (evolis_print_set_option(m_pPrinter,"FOverlayManagement", "BMPVARNISH"))
     {
@@ -1545,17 +1610,49 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVec
     }
     RunlogF("evolis_print_set_option(FOverlayManagement,BMPVARNISH) Succeed.\n");
 
-    RunlogF("Try to evolis_print_set_option(IFOverlayCustom,%s).\n",strOverlayer.c_str());
-    if (evolis_print_set_option(m_pPrinter,"IFOverlayCustom",strOverlayer.c_str()))
-    {
-        RunlogF("Failed in evolis_print_set_option(FOverlayManagement,BMPVARNISH).\n",strOverlayer.c_str());
-        return 1;
-    }
-    RunlogF("evolis_print_set_option(IFOverlayCustom,%s) Succeed.\n",strOverlayer.c_str());
+    RunlogF("Try to evolis_print_set_option(FBlackManagement,TEXTINBLACK).\n");
+    evolis_print_set_option(m_pPrinter, "FBlackManagement", "TEXTINBLACK");
 
-    if (evolis_print_set_imageb(m_pPrinter, evolis_face_t::EVOLIS_FA_FRONT, pFileBuffer,nBufferSize))
+    RunlogF("Try to evolis_print_set_option(IFTextRegion,0x0x1000x220).\n");
+    evolis_print_set_option(m_pPrinter, "IFTextRegion", "0x0x1000x220");
+
+    RunlogF("Try to evolis_print_set_option(IFBlackLevelValue,40).\n");
+    evolis_print_set_option(m_pPrinter, "IFBlackLevelValue", "40");
+
+    RunlogF("Try to evolis_print_set_option(IFDarkLevelValue,10).\n");
+    evolis_print_set_option(m_pPrinter, "IFDarkLevelValue ", "10");
+//    从文件中读取数据
+//    char *pFileBuffer = nullptr;
+//    int nBufferSize = 0;
+//    QFile filepic(szTempFile);
+//    if (!filepic.open(QIODevice::ReadOnly))
+//    {
+//        RunlogF("Filed to in open file:%s.\n",szTempFile);
+//        return 1;
+//    }
+//    nBufferSize = filepic.size();
+//    if (!nBufferSize)
+//    {
+//        RunlogF("File %s is Zero size.\n",szTempFile);
+//        return 1;
+//    }
+//    pFileBuffer = new char [filepic.size()];
+//    if (!pFileBuffer)
+//    {
+//        RunlogF("Insufficent memory in reading file :%s!\n",szTempFile);
+//        return 1;
+//    }
+//    shared_ptr<char> AutoBuffer(pFileBuffer);
+//    filepic.read(pFileBuffer,nBufferSize);
+//    if (evolis_print_set_imageb(m_pPrinter, evolis_face_t::EVOLIS_FA_FRONT, pFileBuffer,nBufferSize))
+//    {
+//        RunlogF("evolis_print_set_imageb failed:%s.\n",inPicInfo.picpath.c_str());
+//        return 1;
+//    }
+
+    if (evolis_print_set_imagep(m_pPrinter, evolis_face_t::EVOLIS_FA_FRONT,szTempFile))
     {
-        RunlogF("evolis_print_set_imageb failed:%s.\n",inPicInfo.picpath.c_str());
+        RunlogF("evolis_print_set_imagep failed:%s.\n",szTempFile);
         return 1;
     }
 
@@ -1575,10 +1672,11 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVec
         printed = !(es.information & EVOLIS_INF_BUSY);
         tNow = system_clock::now();
         auto tDeration = duration_cast<milliseconds>(tNow - tLast);
-        if (tDeration.count() > 500)
+        if (tDeration.count() > nTimeout*1000)
         {
             tLast = tNow;
             RunlogF("Waiting printer task stop\n");
+            break;
         }
     }
     return 0;

@@ -64,6 +64,35 @@ INCLUDEPATH += $$PWD/Z390/lib/armeabi-v7a
 DEPENDPATH += $$PWD/Z390/lib/armeabi-v7a
 
 DISTFILES += \
+    OpenCV/3rdparty.libs/armeabi-v7a/libIlmImf.a \
+    OpenCV/3rdparty.libs/armeabi-v7a/libade.a \
+    OpenCV/3rdparty.libs/armeabi-v7a/libcpufeatures.a \
+    OpenCV/3rdparty.libs/armeabi-v7a/libittnotify.a \
+    OpenCV/3rdparty.libs/armeabi-v7a/liblibjpeg-turbo.a \
+    OpenCV/3rdparty.libs/armeabi-v7a/liblibopenjp2.a \
+    OpenCV/3rdparty.libs/armeabi-v7a/liblibpng.a \
+    OpenCV/3rdparty.libs/armeabi-v7a/liblibprotobuf.a \
+    OpenCV/3rdparty.libs/armeabi-v7a/liblibtiff.a \
+    OpenCV/3rdparty.libs/armeabi-v7a/liblibwebp.a \
+    OpenCV/3rdparty.libs/armeabi-v7a/libquirc.a \
+    OpenCV/3rdparty.libs/armeabi-v7a/libtbb.a \
+    OpenCV/3rdparty.libs/armeabi-v7a/libtegra_hal.a \
+    OpenCV/libs/libopencv_calib3d.a \
+    OpenCV/libs/libopencv_core.a \
+    OpenCV/libs/libopencv_dnn.a \
+    OpenCV/libs/libopencv_features2d.a \
+    OpenCV/libs/libopencv_flann.a \
+    OpenCV/libs/libopencv_gapi.a \
+    OpenCV/libs/libopencv_highgui.a \
+    OpenCV/libs/libopencv_imgcodecs.a \
+    OpenCV/libs/libopencv_imgproc.a \
+    OpenCV/libs/libopencv_java4.so \
+    OpenCV/libs/libopencv_ml.a \
+    OpenCV/libs/libopencv_objdetect.a \
+    OpenCV/libs/libopencv_photo.a \
+    OpenCV/libs/libopencv_stitching.a \
+    OpenCV/libs/libopencv_video.a \
+    OpenCV/libs/libopencv_videoio.a \
     Z390/include/Evolis_Elypso_ErrorCode.xml \
     android/AndroidManifest.xml \
     android/assets/overlayer.bmp \

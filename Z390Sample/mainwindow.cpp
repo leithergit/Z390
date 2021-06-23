@@ -18,6 +18,12 @@
 #include <QColorDialog>
 #include <QEvent>
 #include <QMouseEvent>
+#include "./Z390/include/evolis.h"
+#include "./Z390/include/android.h""
+#include "./Z390/include/evo-printers.h"
+
+
+
 //#include "./Z390/include/evolis_z390_lithographprinter.h"
 
 using namespace std;
@@ -240,7 +246,7 @@ void MainWindow::Printer_GetStatus()
 
     if (pPrinter->Print_Status(lTimeout,lpStatus,szRCode))
     {
-        OutputMsg("Print_StartPrint Failed!\n");
+        OutputMsg("Print_Status Failed!\n");
         return ;
     }
     OutputMsg("Device = %d\tMedia = %d\tToner = %d.\n",lpStatus->fwDevice,(short)lpStatus->fwMedia,lpStatus->fwToner);
@@ -730,10 +736,10 @@ void MainWindow::on_pushButton_PrinterSetText_clicked()
 ////    {
       string strFont = "宋体";
       int nFontSize = 8;
-      pPrinter->Print_PrintText(lTimeout,"姓名 测试用户",180,26,14,"宋体",8,1,0,szRCode);
-      pPrinter->Print_PrintText(lTimeout,"社会保障号码  123456789012345678",180,26,19,"宋体",8,1,0,szRCode);
-      pPrinter->Print_PrintText(lTimeout,"社会保障卡号  ABCDEFGHIJKLMN",180,26,24,"宋体",8,1,0,szRCode);
-      pPrinter->Print_PrintText(lTimeout,"发卡日期  2019年9月27日",180,26,29,"宋体",8,1,0,szRCode);
+      pPrinter->Print_PrintText(lTimeout,"姓名 测试用户",nAngle,26,14,"宋体",size,1,0,szRCode);
+      pPrinter->Print_PrintText(lTimeout,"社会保障号码  123456789012345678",nAngle,26,19,"宋体",size,1,0,szRCode);
+      pPrinter->Print_PrintText(lTimeout,"社会保障卡号  ABCDEFGHIJKLMN",nAngle,26,24,"宋体",size,1,0,szRCode);
+      pPrinter->Print_PrintText(lTimeout,"发卡日期  2019年9月27日",nAngle,26,29,"宋体",size,1,0,szRCode);
 //        if (pPrinter->Print_PrintText(lTimeout,(char *)imageText.toStdString().c_str(),nAngle,x,y,"宋体",size,1,0,szRCode))
 //            OutputMsg("Print_PrintText Failed!\n");
 //        else
@@ -790,31 +796,51 @@ void MainWindow::on_pushButton_PrinterConfigure_Get_clicked()
 
 void MainWindow::on_pushButton_PrinterConfigure_Set_clicked()
 {
-    CheckPriner(pPrinter);
-    char szRCode[1024] = {0};
-    int x;
+//    CheckPriner(pPrinter);
+//    char szRCode[1024] = {0};
+//    int x;
 
-    long lTimeout = 2000;
+//    long lTimeout = 2000;
 
-    QString strRibionType = ui->comboBox_GRibbontype->currentText();
-    QString strIFDarkLevelValue = ui->lineEdit_IFDraklevelValue->text();
+//    QString strRibionType = ui->comboBox_GRibbontype->currentText();
+//    QString strIFDarkLevelValue = ui->lineEdit_IFDraklevelValue->text();
 
-    LPVOID szCommandout = nullptr;
-    if (pPrinter->Print_ExtraCommand(lTimeout,(char *)"Set GRibbonType",(LPVOID)strRibionType.toStdString().c_str(),szCommandout,szRCode))
+//    LPVOID szCommandout = nullptr;
+//    if (pPrinter->Print_ExtraCommand(lTimeout,(char *)"Set GRibbonType",(LPVOID)strRibionType.toStdString().c_str(),szCommandout,szRCode))
+//    {
+//        OutputMsg("Print_ExtraCommand(Set GRibbonType) Failed!:%s\n",szRCode);
+//    }
+//    else
+//    {
+//        OutputMsg("Print_ExtraCommand(Set GRibbonType) Succeed.\n");
+//    }
+
+//    if (pPrinter->Print_ExtraCommand(lTimeout,(char *)"Set IFDarkLevelValue",(LPVOID)strIFDarkLevelValue.toStdString().c_str(),szCommandout,szRCode))
+//    {
+//        OutputMsg("Print_ExtraCommand(Set IFDarkLevelValue) Failed!:%s\n",szRCode);
+//    }
+//    else
+//    {
+//        OutputMsg("Print_ExtraCommand(Set IFDarkLevelValue) Succeed.\n");
+//    }
+    evolis_t*   printer;
+    QAndroidJniEnvironment jniEnv;
+    QAndroidJniObject androidCtx = QtAndroid::androidContext();
+    evolis_set_android_env(jniEnv, androidCtx.object());
+    if ((printer = evolis_open2("usb:///dev/usb/lp0", EVOLIS_TY_EVOLIS)) != NULL)
     {
-        OutputMsg("Print_ExtraCommand(Set GRibbonType) Failed!:%s\n",szRCode);
+        evolis_print_init(printer);
+        evolis_print_set_option(printer, "GRibbonType", "RC_YMCKO");
+        evolis_print_set_option(printer, "FBlackManagement", "TEXTINBLACK");
+        evolis_print_set_option(printer, "IFTextRegion", "0x0x1000x220");
+        evolis_print_set_option(printer, "IFBlackLevelValue", "40");
+        evolis_print_set_option(printer, "IFDarkLevelValue ", "10");
+        evolis_print_set_imagep(printer, EVOLIS_FA_FRONT, "/mnt/internal_sd/Z390/PrintPreview.bmp");
+        evolis_print_exec(printer);
+        evolis_close(printer);
     }
     else
     {
-        OutputMsg("Print_ExtraCommand(Set GRibbonType) Succeed.\n");
-    }
-
-    if (pPrinter->Print_ExtraCommand(lTimeout,(char *)"Set IFDarkLevelValue",(LPVOID)strIFDarkLevelValue.toStdString().c_str(),szCommandout,szRCode))
-    {
-        OutputMsg("Print_ExtraCommand(Set IFDarkLevelValue) Failed!:%s\n",szRCode);
-    }
-    else
-    {
-        OutputMsg("Print_ExtraCommand(Set IFDarkLevelValue) Succeed.\n");
+        OutputMsg("Error: %s - %s\n", evolis_last_error_string(), strerror(errno));
     }
 }

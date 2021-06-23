@@ -139,10 +139,8 @@ class QEvolisPrinter
 public:
     QEvolisPrinter();
     ~QEvolisPrinter();
-
     void ExtractIso();
     void ExtractFont();
-
     thread *pThread = nullptr;
     list<TaskPtr> listTask;
     mutex mtlistTask;
@@ -153,7 +151,7 @@ public:
     int ProcessTask(TaskPtr pTask);
     int GetDeviceState(void  *pPrinter, char* majorStatusValue, char* minorStatusValue);
     int GetPrinterStatus(void  *pPrinter,int * RibbonNum,int *Device, int *Media);
-    int PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVector);
+    int PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVector,long nTimeout);
     int SetDarkTextRegion(int nLeft,int nTop,int nRight,int nBottom);
     PICINFO m_picInfo;
     vector<TextInfoPtr> m_textInfo;
@@ -162,6 +160,7 @@ public:
     string  strPreviewFile = "";
     string  strGRibbonType = "RC_YMCKO";
     string  strIFDarkLevelValue = "";
+    map<string,float> mapFontSize;
     void *m_pPrinter = nullptr;
     int  On_Print_Open(char *pPort, char *pPortParam, char *pszRcCode) ;
     int  On_Print_Close(char *pszRcCode) ;

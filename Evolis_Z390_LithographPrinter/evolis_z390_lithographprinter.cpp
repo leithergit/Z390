@@ -92,10 +92,10 @@ extern "C"
     {
         va_list args;
         va_start(args, pFormat);
-        int nBuff;
-        CHAR szBuffer[8192] = {0};
-        nBuff = vsnprintf(szBuffer, __countof(szBuffer), pFormat, args);
-        va_end(args);
+//        int nBuff;
+//        CHAR szBuffer[8192] = {0};
+//        nBuff = vsnprintf(szBuffer, __countof(szBuffer), pFormat, args);
+//        va_end(args);
 
         string strInfo = "Z390 ";
         strInfo += pFunction;
@@ -716,18 +716,23 @@ extern "C"
 	{
         Funclog();
 		unsigned int rLen = 0;
-		char dataBuff[1024] = { 0 };
+        char dataBuff[4096] = { 0 };
         OutMsg = "";
 		int rValue = -1;
 		if (!hReader)
             return false;
-
+        RunlogF("Try to Read card with Command:%s.\n",cmd.c_str());
 		rValue = dc_cpuapdu_hex(hReader, cmd.length() / 2, (char*)cmd.c_str(), (unsigned char*)&rLen, (char*)dataBuff);
-		OutMsg = dataBuff;
+        RunlogF("Read card return %d bytes data:%s\n",rLen,dataBuff);
+        if (rLen)
+            OutMsg = dataBuff;
 		if (0 != rValue)
             return false;
         else if ("9000" != OutMsg.substr(OutMsg.length() - 4, 4))
+        {
+            RunlogF("The recieved data is invalid.\n");
            return false;
+        }
         return true;
     }
 
@@ -841,35 +846,57 @@ extern "C"
 		string msg;
 		cmd = "";
 		memset(dataBuff, 0x00, 1024);
-
         if (!RunApdu(m_hReader, "00A404000E315041592E5359532E4444463031",msg))
         {
             strcpy(pszRcCode, "0002");
-            RunlogF(pszRcCode);
+            RunlogF("RunApdu Failed.\n");
             return 1;
         }
-        RunlogF(msg.c_str());
 
         if (!RunApdu(m_hReader, "00A4040008A000000333010101",msg))
 		{
             strcpy(pszRcCode, "0002");
-			RunlogF(pszRcCode);
+            RunlogF("RunApdu Failed.\n");
 			return 1;
         }
-        RunlogF(msg.c_str());
 
         if (!RunApdu(m_hReader, "00B2011400",msg))
         {
             strcpy(pszRcCode, "0002");
-            RunlogF(pszRcCode);
+           RunlogF("RunApdu Failed.\n");
             return 1;
         }
-		RunlogF(msg.c_str());
+        RunlogF("Try to match the Tag:5A.\n");
+        //Tag Length    card(19位)         补码
+        //5A  0A        6228230029000005274F
+        int nIndex = msg.find("5A");
+        if (nIndex < 0)
+        {
+            strcpy(pszRcCode, "0002");
+            RunlogF("RunApdu Failed,can't find the tag:5A.\n");
+            return 1;
+        }
+        RunlogF("Match the Tag:5A succeed,substring = %s.\n",msg.substr(nIndex,msg.size() - nIndex - 1).c_str());
+        nIndex += 2;
+        char *szEndPtr = nullptr;
+        int nStringCount = strtol(msg.substr(nIndex,2).c_str(),&szEndPtr,16);
+        if (nStringCount <=0 )
+        {
+            strcpy(pszRcCode, "0002");
+            RunlogF("StringCount is invalid.\n");
+            return 1;
+        }
+        nIndex += 2;
 
-        String2Char(msg.substr(34, 19));
+        if ((nIndex + 19) > (int)msg.size())
+        {
+            RunlogF("Card number size is less then 19,illegal.\n");
+            return 1;
+        }
+        String2Char(msg.substr(nIndex, 19));
 		lpCmdOut = cpOutMsg;
 
-		m_CardInfo.bankNumber = msg.substr(34, 19);
+        m_CardInfo.bankNumber = msg.substr(nIndex, 19);
         strcpy(pszRcCode, "0000");
 		return 0;
 	}
