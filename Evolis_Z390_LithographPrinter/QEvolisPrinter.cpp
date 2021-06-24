@@ -67,8 +67,8 @@ struct BMP_FILEHDR {                     // BMP file header
 const int BMP_FILEHDR_SIZE = 14;               // size of BMP_FILEHDR data
 const int BMP_WIN = 40;                        // Windows BMP v3 size
 const int BMP_RGB = 0;                         // no compression
-const int nCardWidth = 1024;
-const int nCardHeight = 650;
+const int nCardWidth = 1016;
+const int nCardHeight = 646;
 using namespace std;
 using namespace chrono;
 #define LOBYTE(w)         ((unsigned char)(((ULONG)(w)) & 0xff))
@@ -81,7 +81,7 @@ const int DPI = 300;
 
 extern JavaVM *g_JVM ; // 保存虚拟机
 
-
+#define LibVer          "Z390_1.0.0.31 "
 #define RunlogF(...)    Runlog(__PRETTY_FUNCTION__,__LINE__,__VA_ARGS__);
 #define Funclog()       FuncRunlog(__PRETTY_FUNCTION__,__LINE__);  auto threadID = std::this_thread::get_id();RunlogF("####Current ThreadID:%08x####\n",threadID);
 
@@ -101,7 +101,7 @@ void Runlog(const char* pFunction,int nLine,const char* pFormat, ...)
     nBuff = vsnprintf(szBuffer, __countof(szBuffer), pFormat, args);
     va_end(args);
 
-    string strInfo = "Z390 ";
+    string strInfo = LibVer;
     strInfo += pFunction;
     strInfo += "@";
     strInfo += to_string(nLine);
@@ -365,31 +365,37 @@ QEvolisPrinter::QEvolisPrinter()
     mapFontSize.insert(make_pair("1",9.17));
 
     mapFontSize.insert(make_pair("小一",8.47));
+    mapFontSize.insert(make_pair("11",8.47));
 
     mapFontSize.insert(make_pair("二号",7.76));
     mapFontSize.insert(make_pair("2",7.76));
 
     mapFontSize.insert(make_pair("小二",6.35));
+    mapFontSize.insert(make_pair("12",6.35));
 
     mapFontSize.insert(make_pair("三号",5.64));
     mapFontSize.insert(make_pair("3",5.64));
 
     mapFontSize.insert(make_pair("小三",5.29));
+    mapFontSize.insert(make_pair("13",5.29));
 
     mapFontSize.insert(make_pair("四号",4.94));
     mapFontSize.insert(make_pair("4",4.94));
 
     mapFontSize.insert(make_pair("小四",4.23));
+    mapFontSize.insert(make_pair("14",4.23));
 
     mapFontSize.insert(make_pair("五号",3.70));
     mapFontSize.insert(make_pair("5",3.70));
 
     mapFontSize.insert(make_pair("小五",3.18));
+    mapFontSize.insert(make_pair("15",3.18));
 
     mapFontSize.insert(make_pair("六号",2.56));
     mapFontSize.insert(make_pair("6",2.56));
 
     mapFontSize.insert(make_pair("小六",2.29));
+    mapFontSize.insert(make_pair("16",2.29));
 
     mapFontSize.insert(make_pair("七号",1.94));
     mapFontSize.insert(make_pair("7",1.94));
@@ -942,20 +948,7 @@ int  QEvolisPrinter::On_Print_GetBoxStatus(long lTimeout, Lithograph::LPLITHOGRA
 {
     Funclog();
     CheckPrinter(m_pPrinter);
-    const char *szCmdArray[1] = {"Rlr;p"};
-    char szReplyArray[2][128] = {{0},{0}};
-    for (int i = 0;i < 2;i++)
-    {
-        RunlogF("Try to evolis_command(%s).\n",szCmdArray[i]);
-        if (evolis_command(m_pPrinter, szCmdArray[i],5, szReplyArray[i],128))
-        {
-            RunlogF("evolis_command(%s) Failed.\n",szCmdArray[i]);
-        }
-        else
-        {
-            RunlogF("evolis_command(%s) Succeed,Reply:%s.\n",szReplyArray[i]);
-        }
-    }
+
     const char *szCmd="Rse;f";
     char szReply[128] = {0};
     // chechk the card box status
@@ -1218,7 +1211,7 @@ int QEvolisPrinter::GetPrinterStatus(void  *pPrinter,int * RibbonNum,int *Device
         // 4.9x Volts是有卡
         float fVolt = atof(szReply2);
         if (fVolt >= 4.9)
-            *Media = 4;
+            *Media = 1;
         else
             *Media = 0;
     }
@@ -1544,10 +1537,30 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVec
     Mat HeaderROI = canvas(Rect(MM2Pixel(inPicInfo.fxPos),MM2Pixel(inPicInfo.fyPos),MM2Pixel(inPicInfo.fWidth),MM2Pixel(inPicInfo.fHeight)));
     HeaderPrint.copyTo(HeaderROI);
 
+    int nDarkLeft = 0,nDarkTop = 0,nDarkRight = 0,nDarkBottom = 0;
+
     for (auto var : inTextVector)
     {
         RunlogF("Text = %s,FontSize = %d,xPos = %.02f,yPos = %.2f.\n",var->sText.c_str(),var->nFontSize);
-        Mat FontROI = canvas(Rect(MM2Pixel(var->fxPos), MM2Pixel(var->fyPos),nCardWidth -MM2Pixel(var->fxPos) - 5, nCardHeight-MM2Pixel(var->fyPos) - 5));
+        Rect rtROI(MM2Pixel(var->fxPos), MM2Pixel(var->fyPos),nCardWidth - MM2Pixel(var->fxPos) - 2, nCardHeight - MM2Pixel(var->fyPos) - 2);
+        if (!nDarkLeft)
+            nDarkLeft = rtROI.x;
+        else
+            nDarkLeft = nDarkLeft<=rtROI.x?nDarkLeft:rtROI.x;
+        if (!nDarkTop)
+            nDarkTop = rtROI.y;
+        else
+            nDarkTop = nDarkTop<=rtROI.y?nDarkTop:rtROI.y;
+        if (!nDarkRight)
+            nDarkRight = rtROI.x + rtROI.width;
+        else
+            nDarkRight = nDarkRight>=(rtROI.x + rtROI.width)?nDarkRight:(rtROI.x + rtROI.width);
+        if (!nDarkBottom)
+            nDarkBottom = rtROI.y + rtROI.height;
+        else
+            nDarkBottom = nDarkBottom>=(rtROI.y + rtROI.height)?nDarkBottom:(rtROI.y + rtROI.height);
+
+        Mat FontROI = canvas(rtROI);
         IplImage FontImag= cvIplImage(FontROI);
         string strFontSize = std::to_string(var->nFontSize);
         auto itFind = mapFontSize.find(strFontSize);
@@ -1608,13 +1621,17 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVec
         RunlogF("Failed in evolis_print_set_option(FOverlayManagement,BMPVARNISH).\n");
         return 1;
     }
-    RunlogF("evolis_print_set_option(FOverlayManagement,BMPVARNISH) Succeed.\n");
 
     RunlogF("Try to evolis_print_set_option(FBlackManagement,TEXTINBLACK).\n");
     evolis_print_set_option(m_pPrinter, "FBlackManagement", "TEXTINBLACK");
 
-    RunlogF("Try to evolis_print_set_option(IFTextRegion,0x0x1000x220).\n");
-    evolis_print_set_option(m_pPrinter, "IFTextRegion", "0x0x1000x220");
+    char szDarkZone[32] = {0};
+    if (inPicInfo.nAngle > 0)
+        sprintf(szDarkZone,"%dx%dx%dx%d",0,0,nCardWidth - nDarkLeft,nCardHeight - nDarkTop);
+    else
+        sprintf(szDarkZone,"%dx%dx%dx%d",nDarkLeft,nDarkTop,nDarkRight,nDarkBottom);
+    RunlogF("Try to evolis_print_set_option(IFTextRegion,%s).\n",szDarkZone);
+    evolis_print_set_option(m_pPrinter, "IFTextRegion", szDarkZone);
 
     RunlogF("Try to evolis_print_set_option(IFBlackLevelValue,40).\n");
     evolis_print_set_option(m_pPrinter, "IFBlackLevelValue", "40");
