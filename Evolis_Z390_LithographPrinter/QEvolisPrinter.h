@@ -5,7 +5,7 @@
 #include <QObject>
 #include <thread>
 #include <mutex>
-#include <QApplication>
+//#include <QApplication>
 #include "LithographPrinter.h"
 
 using namespace std;
@@ -74,7 +74,7 @@ typedef struct TextInfo
     float   fyPos;
     string  pFontName;
     int     nFontSize;
-    int     nFontStyle;
+    int     nFontStyle; // 1-常规；2-粗体；4-斜体；8-黑体
     int     nColor;
     int     nType;
     TextInfo()

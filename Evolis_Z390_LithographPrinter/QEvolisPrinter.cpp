@@ -4,8 +4,8 @@
 #include <QtAndroid>
 #include <jni.h>
 #include <string>
-#include <QPainter>
-#include <QImage>
+//#include <QPainter>
+//#include <QImage>
 #include <QtDebug>
 #include <string.h>
 #include <QRectF>
@@ -21,18 +21,15 @@
 #include <ctime>
 #include <thread>
 #include <QDir>
-#include <QApplication>
 #include <qglobal.h>
 #include <QTextCodec>
 #include "evolis.h"
 #include "android.h"
 #include "evo-printers.h"
 #include "QEvolisPrinter.h"
-#include "CVText_CN.h"
 
 #include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/freetype.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc_c.h>
@@ -121,159 +118,159 @@ void FuncRunlog(const char* pFunction,int nLine)
     __android_log_print(ANDROID_LOG_INFO,"Debug","%s",strInfo.c_str());
 }
 
-int Convert_dib(char **pBuffer, const QImage& img)
-{
-    QImage image;
-    switch (img.format())
-    {
-    case QImage::Format_Mono:
-    case QImage::Format_Indexed8:
-    case QImage::Format_RGB32:
-    case QImage::Format_ARGB32:
-        image = img;
-        break;
-    case QImage::Format_MonoLSB:
-        image = img.convertToFormat(QImage::Format_Mono);
-        break;
-    case QImage::Format_Alpha8:
-    case QImage::Format_Grayscale8:
-        image = img.convertToFormat(QImage::Format_Indexed8);
-        break;
-    default:
-        if (img.hasAlphaChannel())
-            image = img.convertToFormat(QImage::Format_ARGB32);
-        else
-            image = img.convertToFormat(QImage::Format_RGB32);
-        break;
-    }
+//int Convert_dib(char **pBuffer, const QImage& img)
+//{
+//    QImage image;
+//    switch (img.format())
+//    {
+//    case QImage::Format_Mono:
+//    case QImage::Format_Indexed8:
+//    case QImage::Format_RGB32:
+//    case QImage::Format_ARGB32:
+//        image = img;
+//        break;
+//    case QImage::Format_MonoLSB:
+//        image = img.convertToFormat(QImage::Format_Mono);
+//        break;
+//    case QImage::Format_Alpha8:
+//    case QImage::Format_Grayscale8:
+//        image = img.convertToFormat(QImage::Format_Indexed8);
+//        break;
+//    default:
+//        if (img.hasAlphaChannel())
+//            image = img.convertToFormat(QImage::Format_ARGB32);
+//        else
+//            image = img.convertToFormat(QImage::Format_RGB32);
+//        break;
+//    }
 
-    qsizetype nSize = image.sizeInBytes();
-    BMP_FILEHDR bf;
-    BMP_INFOHDR bi;
+//    qsizetype nSize = image.sizeInBytes();
+//    BMP_FILEHDR bf;
+//    BMP_INFOHDR bi;
 
-    int nOffset = 0;
-    char* pImageBuffer = new char[nSize + sizeof(bf) + sizeof(bf)];
-    if (!pImageBuffer)
-        return 0;
+//    int nOffset = 0;
+//    char* pImageBuffer = new char[nSize + sizeof(bf) + sizeof(bf)];
+//    if (!pImageBuffer)
+//        return 0;
 
-    int nbits;
-    int bpl_bmp;
-    // Calculate a minimum bytes-per-line instead of using whatever value this QImage is using internally.
-    int bpl = ((image.width() * image.depth() + 31) >> 5) << 2;
+//    int nbits;
+//    int bpl_bmp;
+//    // Calculate a minimum bytes-per-line instead of using whatever value this QImage is using internally.
+//    int bpl = ((image.width() * image.depth() + 31) >> 5) << 2;
 
-    if (image.depth() == 8 && image.colorCount() <= 16)
-    {
-        bpl_bmp = (((bpl + 1) / 2 + 3) / 4) * 4;
-        nbits = 4;
-    }
-    else if (image.depth() == 32)
-    {
-        bpl_bmp = ((image.width() * 24 + 31) / 32) * 4;
-        nbits = 24;
-    }
-    else
-    {
-        bpl_bmp = bpl;
-        nbits = image.depth();
-    }
-    // build file header
-    memcpy(&bf.bfType, "BM", 2);
+//    if (image.depth() == 8 && image.colorCount() <= 16)
+//    {
+//        bpl_bmp = (((bpl + 1) / 2 + 3) / 4) * 4;
+//        nbits = 4;
+//    }
+//    else if (image.depth() == 32)
+//    {
+//        bpl_bmp = ((image.width() * 24 + 31) / 32) * 4;
+//        nbits = 24;
+//    }
+//    else
+//    {
+//        bpl_bmp = bpl;
+//        nbits = image.depth();
+//    }
+//    // build file header
+//    memcpy(&bf.bfType, "BM", 2);
 
-    // write file header
-    bf.bfReserved1 = 0;
-    bf.bfReserved2 = 0;
-    bf.bfOffBits = BMP_FILEHDR_SIZE + BMP_WIN + image.colorCount() * 4;
-    bf.bfSize = bf.bfOffBits + bpl_bmp * image.height();
-    memcpy(&pImageBuffer[nOffset], &bf, sizeof(bf));
-    nOffset += sizeof(bf);
+//    // write file header
+//    bf.bfReserved1 = 0;
+//    bf.bfReserved2 = 0;
+//    bf.bfOffBits = BMP_FILEHDR_SIZE + BMP_WIN + image.colorCount() * 4;
+//    bf.bfSize = bf.bfOffBits + bpl_bmp * image.height();
+//    memcpy(&pImageBuffer[nOffset], &bf, sizeof(bf));
+//    nOffset += sizeof(bf);
 
-    bi.biSize = BMP_WIN;                // build info header
-    bi.biWidth = image.width();
-    bi.biHeight = image.height();
-    bi.biPlanes = 1;
-    bi.biBitCount = nbits;
-    bi.biCompression = BMP_RGB;
-    bi.biSizeImage = bpl_bmp * image.height();
-    bi.biXPelsPerMeter = image.dotsPerMeterX() ? image.dotsPerMeterX() : 2834; // 72 dpi default
-    bi.biYPelsPerMeter = image.dotsPerMeterY() ? image.dotsPerMeterY() : 2834;
-    bi.biClrUsed = image.colorCount();
-    bi.biClrImportant = image.colorCount();
+//    bi.biSize = BMP_WIN;                // build info header
+//    bi.biWidth = image.width();
+//    bi.biHeight = image.height();
+//    bi.biPlanes = 1;
+//    bi.biBitCount = nbits;
+//    bi.biCompression = BMP_RGB;
+//    bi.biSizeImage = bpl_bmp * image.height();
+//    bi.biXPelsPerMeter = image.dotsPerMeterX() ? image.dotsPerMeterX() : 2834; // 72 dpi default
+//    bi.biYPelsPerMeter = image.dotsPerMeterY() ? image.dotsPerMeterY() : 2834;
+//    bi.biClrUsed = image.colorCount();
+//    bi.biClrImportant = image.colorCount();
 
-    memcpy(&pImageBuffer[nOffset], &bi, sizeof(bi));
-    nOffset += sizeof(bi);
+//    memcpy(&pImageBuffer[nOffset], &bi, sizeof(bi));
+//    nOffset += sizeof(bi);
 
 
-    if (image.depth() != 32)
-    {                // write color table
-        uchar* color_table = new uchar[4 * image.colorCount()];
-        uchar* rgb = color_table;
-        QVector<QRgb> c = image.colorTable();
-        for (int i = 0; i < image.colorCount(); i++)
-        {
-            *rgb++ = qBlue(c[i]);
-            *rgb++ = qGreen(c[i]);
-            *rgb++ = qRed(c[i]);
-            *rgb++ = 0;
-        }
-        memcpy(&pImageBuffer[nOffset], color_table, 4 * image.colorCount());
-        nOffset += 4 * image.colorCount();
+//    if (image.depth() != 32)
+//    {                // write color table
+//        uchar* color_table = new uchar[4 * image.colorCount()];
+//        uchar* rgb = color_table;
+//        QVector<QRgb> c = image.colorTable();
+//        for (int i = 0; i < image.colorCount(); i++)
+//        {
+//            *rgb++ = qBlue(c[i]);
+//            *rgb++ = qGreen(c[i]);
+//            *rgb++ = qRed(c[i]);
+//            *rgb++ = 0;
+//        }
+//        memcpy(&pImageBuffer[nOffset], color_table, 4 * image.colorCount());
+//        nOffset += 4 * image.colorCount();
 
-        delete []color_table;
-    }
+//        delete []color_table;
+//    }
 
-    int y;
+//    int y;
 
-    if (nbits == 1 || nbits == 8)
-    {                // direct output
-        for (y = image.height() - 1; y >= 0; y--)
-        {
-            memcpy(&pImageBuffer[nOffset], image.constScanLine(y), bpl);
-            nOffset += bpl;
-        }
+//    if (nbits == 1 || nbits == 8)
+//    {                // direct output
+//        for (y = image.height() - 1; y >= 0; y--)
+//        {
+//            memcpy(&pImageBuffer[nOffset], image.constScanLine(y), bpl);
+//            nOffset += bpl;
+//        }
 
-        return nOffset;
-    }
+//        return nOffset;
+//    }
 
-    uchar* buf = new uchar[bpl_bmp];
-    uchar* b, * end;
-    const uchar* p;
+//    uchar* buf = new uchar[bpl_bmp];
+//    uchar* b, * end;
+//    const uchar* p;
 
-    memset(buf, 0, bpl_bmp);
-    for (y = image.height() - 1; y >= 0; y--)
-    {        // write the image bits
-        if (nbits == 4)
-        {                        // convert 8 -> 4 bits
-            p = image.constScanLine(y);
-            b = buf;
-            end = b + image.width() / 2;
-            while (b < end)
-            {
-                *b++ = (*p << 4) | (*(p + 1) & 0x0f);
-                p += 2;
-            }
-            if (image.width() & 1)
-                *b = *p << 4;
-        }
-        else
-        {                                // 32 bits
-            const QRgb* p = (const QRgb*)image.constScanLine(y);
-            const QRgb* end = p + image.width();
-            b = buf;
-            while (p < end)
-            {
-                *b++ = qBlue(*p);
-                *b++ = qGreen(*p);
-                *b++ = qRed(*p);
-                p++;
-            }
-        }
-        memcpy(&pImageBuffer[nOffset], buf, bpl_bmp);
-        nOffset += bpl_bmp;
-    }
-    delete[] buf;
-    *pBuffer = pImageBuffer;
-    return nOffset;
-}
+//    memset(buf, 0, bpl_bmp);
+//    for (y = image.height() - 1; y >= 0; y--)
+//    {        // write the image bits
+//        if (nbits == 4)
+//        {                        // convert 8 -> 4 bits
+//            p = image.constScanLine(y);
+//            b = buf;
+//            end = b + image.width() / 2;
+//            while (b < end)
+//            {
+//                *b++ = (*p << 4) | (*(p + 1) & 0x0f);
+//                p += 2;
+//            }
+//            if (image.width() & 1)
+//                *b = *p << 4;
+//        }
+//        else
+//        {                                // 32 bits
+//            const QRgb* p = (const QRgb*)image.constScanLine(y);
+//            const QRgb* end = p + image.width();
+//            b = buf;
+//            while (p < end)
+//            {
+//                *b++ = qBlue(*p);
+//                *b++ = qGreen(*p);
+//                *b++ = qRed(*p);
+//                p++;
+//            }
+//        }
+//        memcpy(&pImageBuffer[nOffset], buf, bpl_bmp);
+//        nOffset += bpl_bmp;
+//    }
+//    delete[] buf;
+//    *pBuffer = pImageBuffer;
+//    return nOffset;
+//}
 
 bool SetAndroidEnv()
 {
@@ -348,7 +345,7 @@ bool SetAndroidEnv()
 //    Funclog();
 //}
 
-QApplication* pApp = nullptr;
+//QApplication* pApp = nullptr;
 
 QEvolisPrinter::QEvolisPrinter()
 {
@@ -388,20 +385,20 @@ QEvolisPrinter::QEvolisPrinter()
     mapFontSize.insert(make_pair("五号",3.70));
     mapFontSize.insert(make_pair("5",3.70));
 
-    mapFontSize.insert(make_pair("小五",3.18));
-    mapFontSize.insert(make_pair("15",3.18));
+    mapFontSize.insert(make_pair("小五",3.18));    
+    mapFontSize.insert(make_pair("8",3.18));
 
-    mapFontSize.insert(make_pair("六号",2.56));
-    mapFontSize.insert(make_pair("6",2.56));
+//    mapFontSize.insert(make_pair("六号",2.56));
+//    mapFontSize.insert(make_pair("6",2.56));
 
-    mapFontSize.insert(make_pair("小六",2.29));
-    mapFontSize.insert(make_pair("16",2.29));
+//    mapFontSize.insert(make_pair("小六",2.29));
+//    mapFontSize.insert(make_pair("16",2.29));
 
-    mapFontSize.insert(make_pair("七号",1.94));
-    mapFontSize.insert(make_pair("7",1.94));
+//    mapFontSize.insert(make_pair("七号",1.94));
+//    mapFontSize.insert(make_pair("7",1.94));
 
-    mapFontSize.insert(make_pair("八号",1.76));
-    mapFontSize.insert(make_pair("8",1.76));
+//    mapFontSize.insert(make_pair("八号",1.76));
+//    mapFontSize.insert(make_pair("8",1.76));
 
 //    const char *argv = "/data/app/com.example.crddriver_testtool-2/lib/arm/libEvolis_Z390_LithographPrinter_armeabi-v7a.so";
 //    int argc = 1;
@@ -1050,7 +1047,7 @@ int  QEvolisPrinter::On_Print_InitPrint(long lTimeout, char *pszRcCode)
     memset(&m_picInfo, 0x00, sizeof(PICINFO));
 
     //发送Pneab;E
-    const char* pCommand = "Pneab;E";
+    const char* pCommand = "Pneab;E";       // 打印结束后不出卡
     char szReply[1024] = { 0 };
     int nRes = 1;
 
@@ -1197,6 +1194,7 @@ int QEvolisPrinter::GetPrinterStatus(void  *pPrinter,int * RibbonNum,int *Device
     RunlogF("evolis_command(%s) Succeed,Reply:%s.\n",szCmd[nIdx],szReply);
 
     char szReply2[16] = {0};
+    nIdx ++;
     RunlogF("Try to evolis_command(%s).\n",szCmd[nIdx]);
     if (evolis_command(m_pPrinter,szCmd[nIdx],strlen(szCmd[nIdx]),szReply2,16) < 0)
     {
@@ -1207,9 +1205,11 @@ int QEvolisPrinter::GetPrinterStatus(void  *pPrinter,int * RibbonNum,int *Device
     //Media 0-无卡；1-卡在门口；2-卡在内部；3-卡在上电位，4-卡在闸门外；5-堵卡；6-卡片未知（根据硬件特性返回,必须支持有无卡检测）
     if (strcmp(szReply,"OK") == 0)
     {
-        // 0.2x Volts是没卡
-        // 4.9x Volts是有卡
+        // 0,2x Volts是没卡
+        // 4,9x Volts是有卡
+        szReply2[1] = '.';
         float fVolt = atof(szReply2);
+        RunlogF("Rse;M Status:%.2f.\n",fVolt);
         if (fVolt >= 4.9)
             *Media = 1;
         else
@@ -1561,7 +1561,6 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVec
             nDarkBottom = nDarkBottom>=(rtROI.y + rtROI.height)?nDarkBottom:(rtROI.y + rtROI.height);
 
         Mat FontROI = canvas(rtROI);
-        IplImage FontImag= cvIplImage(FontROI);
         string strFontSize = std::to_string(var->nFontSize);
         auto itFind = mapFontSize.find(strFontSize);
         if (itFind == mapFontSize.end())
@@ -1569,13 +1568,18 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, vector<TextInfoPtr>& inTextVec
             RunlogF("Invliad font size = %d,skip text:%s.\n",var->nFontSize,var->sText.c_str());
             continue;
         }
-        int nPixelSize = (int)round(MM2Pixel(itFind->second));
-        RunlogF("Text = %s,mmFontSize = %.2f, FontPixelSize = %d.\n",var->sText.c_str(),itFind->second,nPixelSize);
-        CVText_CN cvTextCn("/mnt/internal_sd/Z390/simsun.ttc", MM2Pixel(itFind->second));
+        int fontHeight = (int)round(MM2Pixel(itFind->second));
+        RunlogF("Text = %s,FontSize = %.2f, FontPixel = %d.\n",var->sText.c_str(),itFind->second,fontHeight);
+        //CVText_CN cvTextCn("/mnt/internal_sd/Z390/simsun.ttc", MM2Pixel(itFind->second),var->nFontStyle==2);
+        //wchar_t szUnicode[1024] = {0};
+        //mbstowcs(szUnicode,var->sText.c_str(),var->sText.size());
+        //cvTextCn.putText(&FontImag, szUnicode, cvPoint(0,nPixelSize - 3), cvScalar(CV_RGB(0, 0, 0)));
 
-        wchar_t szUnicode[1024] = {0};
-        mbstowcs(szUnicode,var->sText.c_str(),var->sText.size());
-        cvTextCn.putText(&FontImag, szUnicode, cvPoint(0,nPixelSize), cvScalar(CV_RGB(0, 0, 0)));
+        cv::Ptr<cv::freetype::FreeType2> ft2;
+        ft2 = cv::freetype::createFreeType2();
+
+        ft2->loadFontData("/mnt/internal_sd/Z390/simsun.ttc", 0); //加载字库文件
+        ft2->putText(FontROI, var->sText.c_str(), cv::Point(0, 0), fontHeight, CV_RGB(0, 0, 0), -1, CV_AA, false,var->nFontStyle == 2);
     }
 
     if (strPreviewFile.size())

@@ -29,7 +29,7 @@
 #include <thread>
 #include <QObject>
 #include <QDir>
-#include <QApplication>
+//#include <QApplication>
 
 using namespace std;
 using namespace chrono;
@@ -235,7 +235,7 @@ extern "C"
      返回值			<0时 输入参数不合法
                         >0 返回转换后pHex数据的长度
     */
-    int Hex2Binary(unsigned char* szBinary, int nBinaryLen, unsigned char* pHexBuffer, int nHexBuffLen, CHAR chSeperator)
+    int HexString2Binary(unsigned char* pHexBuffer, int nHexBuffLen,unsigned char* szBinary, int nBinaryLen,  CHAR chSeperator)
     {
         if (!szBinary ||
             !pHexBuffer ||
@@ -245,18 +245,18 @@ extern "C"
         if (chSeperator == '\0')
             nMult = 2;
 
-        if (nBinaryLen / nMult > nHexBuffLen)
+        if (nBinaryLen * nMult < nHexBuffLen)
             return -1;
 
         int nCount = 0;
         CHAR ch;
-        for (int i = 0; i < nBinaryLen; i += nMult)
+        for (int i = 0; i < nHexBuffLen; i += nMult)
         {
-            ch = UpcasecharA(szBinary[i]);
+            ch = UpcasecharA(pHexBuffer[i]);
             unsigned char nHi = Char2DigitA(ch);
-            ch = UpcasecharA(szBinary[i + 1]);
+            ch = UpcasecharA(pHexBuffer[i + 1]);
             unsigned char nLo = Char2DigitA(ch);
-            pHexBuffer[nCount++] = (nHi & 0x0F) << 4 | (nLo & 0x0F);
+            szBinary[nCount++] = (nHi & 0x0F) << 4 | (nLo & 0x0F);
         }
         return nCount;
     };
@@ -531,24 +531,34 @@ extern "C"
         }
 		string sIndata = "";
 
-        unsigned char sLen1= nInDataLen/2;
-        unsigned char sendBuffer[1024] = {0};
-        HexStrToByte((const char *)byIndata,sendBuffer,1024);
-        unsigned char rLen1 = 0;
-        unsigned char dataBuffer1[1024] = {0};
+        unsigned char nSendLen = 0;
+        unsigned char szSendBuff[1024] = {0};
+        //HexStrToByte((const char *)byIndata,sendBuffer,1024);
+        //  int Hex2Binary(unsigned char* szBinary, int nBinaryLen, unsigned char* pHexBuffer, int nHexBuffLen, CHAR chSeperator)
+        RunlogF("Try to run HexString2Binary,source string[%d]:%s.\n",nInDataLen,byIndata);
+        nSendLen = HexString2Binary((LPBYTE)byIndata,nInDataLen,(LPBYTE)szSendBuff,1024,0);
+        //RunlogF("Succeed in HexString2Binary,return:%d.\n",nSendLen);
 
-        RunlogF("Try to run dc_cpuapdu,input %d bytes:%s.\n",nInDataLen,byIndata);
-        short nRet = dc_cpuapdu(m_hReader,sLen1,sendBuffer,&rLen1,dataBuffer1);
+        unsigned char nRecvLen = 0;
+        unsigned char szRecvBuff[1024] = {0};
+
+        RunlogF("Succeed in dc_cpuapduInt_hex,return:%d.\n",nSendLen);
+        short nRet = dc_cpuapdu(m_hReader,nSendLen,szSendBuff,&nRecvLen,szRecvBuff);
+        //dc_cpuapduInt_hex(DEVHANDLE icdev, unsigned int slen, char *sendbuffer, unsigned int *rlen, char *databuffer);
+        /// dc_cpuapdu_hex(DEVHANDLE icdev, unsigned char slen, char *sendbuffer, unsigned char *rlen, char *databuffer);
+        //RunlogF("Try to run  dc_cpuapduInt_hex(%s).\n",byIndata);
+        //short nRet = dc_cpuapduInt_hex(m_hReader, nInDataLen, (char *)byIndata,&nRecvLen, (char *)szRecvBuff);
+        //RunlogF("dc_cpuapduInt_hex(%s),return:%d.\n",byIndata,nRet);
+
         if (nRet < 0)
         {
+            RunlogF("Failed in dc_cpuapdu,return:%d.\n",nRet);
             strcpy(pszRcCode, "0001");
             return 1;
         }
-        Binary2Hexstring((unsigned char *)dataBuffer1,rLen1,(unsigned char *)pOutData,nOutLen,0);
-        RunlogF("dc_cpuapdu return %d bytes:%s.\n",rLen1,pOutData);
-
+        RunlogF("dc_cpuapdu return %d bytes:%s.\n",nRecvLen,szRecvBuff);
+        Binary2Hexstring((unsigned char *)szRecvBuff,nRecvLen,(unsigned char *)pOutData,nOutLen,0);
 		strcpy(pszRcCode, "0000");
-        nOutLen = rLen1;
         return 0;
     }
     /** @ingroup CLithographPrinter Function declaration
