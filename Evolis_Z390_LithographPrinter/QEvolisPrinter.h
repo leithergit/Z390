@@ -116,15 +116,16 @@ struct Task
 {
     TaskType    nTaskType;
     //string      strTaskName;
-    int         nResult;
+    int         nResult = 0;
     char*       pRCode;
     void        *pValue = nullptr;
     long        nTimeout;
     Task(TaskType nType,char *szRCode,long lTimeout = 0)
         :nTaskType(nType)
     {
-        nResult = -1;
+        nResult = 0;
         pRCode = szRCode;
+        strcpy(pRCode,"0000");
         nTimeout = lTimeout;
     }
     Task() = delete;
@@ -145,6 +146,7 @@ public:
     list<TaskPtr> listTask;
     mutex mtlistTask;
     mutex mtComplete;
+    bool  bEnablelog = false;
     std::condition_variable cvComplete,cvTask;
     volatile bool bRunning = false;
     void run() ;

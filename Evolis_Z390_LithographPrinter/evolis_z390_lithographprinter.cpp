@@ -311,7 +311,10 @@ extern "C"
         if (pEvolisPriner)
             return pEvolisPriner->Print_Open(pPort,pPortParam,pszRcCode);
         else
+        {
+            strcpy(pszRcCode,"0001");
             return 1;
+        }
     }
     /** @ingroup CLithographPrinter Function declaration
       * @brief  关闭设备
@@ -329,7 +332,10 @@ extern "C"
         if (pEvolisPriner)
             return pEvolisPriner->Print_Close(pszRcCode);
         else
+        {
+            strcpy(pszRcCode,"0001");
             return 1;
+        }
     }
     /** @ingroup CLithographPrinter Function declaration
       * @brief  复位设备
@@ -346,7 +352,10 @@ extern "C"
          if (pEvolisPriner)
              return pEvolisPriner->Print_Reset(lTimeout,nResetAction,pszRcCode);
          else
+         {
+             strcpy(pszRcCode,"0001");
              return 1;
+         }
     }
     /** @ingroup CLithographPrinter Function declaration
       * @brief  获取固件版本以及动态库版本信息
@@ -402,7 +411,10 @@ extern "C"
         if (pEvolisPriner)
             return pEvolisPriner->Print_Eject(lTimeout,pszRcCode);
         else
+        {
+            strcpy(pszRcCode,"0001");
             return 1;
+        }
     }
     /** @ingroup CLithographPrinter Function declaration
       * @brief  吞卡到打印机回收箱
@@ -417,7 +429,10 @@ extern "C"
         if (pEvolisPriner)
             return pEvolisPriner->Print_Retract(lTimeout,nBoxNo,pszRcCode);
         else
+        {
+            strcpy(pszRcCode,"0001");
             return 1;
+        }
     }
     /** @ingroup CLithographPrinter Function declaration
       * @brief  读磁条(若支持需实现)
@@ -575,7 +590,10 @@ extern "C"
         if (pEvolisPriner)
             return pEvolisPriner->Print_Dispense(lTimeout,nBox,nDispPos,pszRcCode);
         else
+        {
+            strcpy(pszRcCode,"0001");
             return 1;
+        }
     };
 
     /** @ingroup CLithographPrinter Function declaration
@@ -591,7 +609,10 @@ extern "C"
         if (pEvolisPriner)
             return pEvolisPriner->Print_GetBoxStatus(lTimeout, lpBoxInfo,  pszRcCode);
         else
+        {
+            strcpy(pszRcCode,"0001");
             return 1;
+        }
     };
 
     //   WORD fwDevice;		//打印机状态,   需要有0和1和2，0在线，1有卡在内部工作中，2离线,2021.06.09 13.21 胡杰 定义
@@ -611,7 +632,10 @@ extern "C"
         if (pEvolisPriner)
             return pEvolisPriner->Print_Status(lTimeout, lpStatus,  pszRcCode);
         else
+        {
+            strcpy(pszRcCode,"0001");
             return 1;
+        }
     };
     /** @ingroup CLithographPrinter Function declaration
       * @brief  初始化打印,在打印图片、文字、条码前调用
@@ -625,7 +649,10 @@ extern "C"
         if (pEvolisPriner)
             return pEvolisPriner->Print_InitPrint(lTimeout, pszRcCode);
         else
+        {
+            strcpy(pszRcCode,"0001");
             return 1;
+        }
     };
     /** @ingroup CLithographPrinter Function declaration
       * @brief  预打印图片
@@ -814,7 +841,10 @@ extern "C"
         if (pEvolisPriner)
             return pEvolisPriner->Print_StartPrint(lTimeout,  pszRcCode);
         else
+        {
+            strcpy(pszRcCode,"0001");
             return 1;
+        }
     };
     /** @ingroup CLithographPrinter Function declaration
       * @brief  翻转卡片

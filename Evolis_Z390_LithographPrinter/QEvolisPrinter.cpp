@@ -493,12 +493,12 @@ void QEvolisPrinter::Exit()
     cvTask.notify_one();
 }
 
-#define NotifyandWait()     {   RunlogF("Send notify for a new task.\n");\
-                                cvTask.notify_one();\
-                                unique_lock<mutex> lockComplete(mtComplete);\
-                                RunlogF("Wait for task complete.\n");\
-                                cvComplete.wait(lockComplete);\
-                                RunlogF("Task complete,Result = %d,RcCode = %s.\n",pTask->nResult,pTask->pRCode);\
+#define NotifyandWait(x)     {  cvTask.notify_one();\
+                                if (x){\
+                                    unique_lock<mutex> lockComplete(mtComplete);\
+                                    cvComplete.wait(lockComplete);\
+                                    RunlogF("Task complete,Result = %d,RcCode = %s.\n",pTask->nResult,pTask->pRCode);\
+                                }\
                                 return pTask->nResult;\
                               }
 
@@ -506,30 +506,42 @@ int  QEvolisPrinter::Print_Open(char *pPort, char *pPortParam, char *pszRcCode)
 {
     Funclog();
     TaskPtr pTask = make_shared<Task>(Task_Print_Open,pszRcCode);
-    RunlogF("Put a task.\n");
+    //RunlogF("Put a task.\n");
     unique_lock<mutex> lock(mtlistTask);
     listTask.push_back(pTask);
     lock.unlock();
-    RunlogF("Send notify for a new task.\n");
+    //RunlogF("Send notify for a new task.\n");
     cvTask.notify_one();
     unique_lock<mutex> lockComplete(mtComplete);
-    RunlogF("Wait for task complete.\n");
+    //RunlogF("Wait for task complete.\n");
     cvComplete.wait(lockComplete);
-    RunlogF("Task complete,Result = %d,RcCode = %s.\n",pTask->nResult,pTask->pRCode);
+    //RunlogF("Task complete,Result = %d,RcCode = %s.\n",pTask->nResult,pTask->pRCode);
     return pTask->nResult;
 }
+
+//0001	入参校验失败（入参为空/格式不符/）
+//0002	方法执行失败
+//0003	句柄为空
+//0004	打开端口失败
+//0005	卡片复位失败
 
 int  QEvolisPrinter::Print_Close(char *pszRcCode)
 {
     Funclog();
-
     CheckPrinter(m_pPrinter);
-
     TaskPtr pTask = make_shared<Task>(Task_Print_Close,pszRcCode);
-    unique_lock<mutex> lock(mtlistTask);
-    listTask.push_back(pTask);
-    lock.unlock();
-    NotifyandWait();
+    unique_lock<mutex> lock(mtlistTask,std::try_to_lock);
+    if (lock.owns_lock())
+    {
+        listTask.push_back(pTask);
+        lock.unlock();
+        NotifyandWait(false);
+    }
+    else
+    {
+        strcpy(pszRcCode,"0002");
+        return 2;
+    }
 }
 
 int  QEvolisPrinter::Print_Reset(long lTimeout, int nResetAction, char *pszRcCode)
@@ -538,10 +550,18 @@ int  QEvolisPrinter::Print_Reset(long lTimeout, int nResetAction, char *pszRcCod
     CheckPrinter(m_pPrinter);
     TaskPtr pTask = make_shared<Task>(Task_Print_Reset,pszRcCode);
     pTask->pValue = &nResetAction;
-    unique_lock<mutex> lock(mtlistTask);
-    listTask.push_back(pTask);
-    lock.unlock();
-    NotifyandWait();
+    unique_lock<mutex> lock(mtlistTask,std::try_to_lock);
+    if (lock.owns_lock())
+    {
+        listTask.push_back(pTask);
+        lock.unlock();
+        NotifyandWait(false);
+    }
+    else
+    {
+        strcpy(pszRcCode,"0002");
+        return 2;
+    }
 }
 
 // 退卡到门口
@@ -550,10 +570,18 @@ int  QEvolisPrinter::Print_Eject(long lTimeout, char *pszRcCode)
     Funclog();
     CheckPrinter(m_pPrinter);
     TaskPtr pTask = make_shared<Task>(Task_Print_Eject,pszRcCode,lTimeout);
-    unique_lock<mutex> lock(mtlistTask);
-    listTask.push_back(pTask);
-    lock.unlock();
-    NotifyandWait();
+    unique_lock<mutex> lock(mtlistTask,std::try_to_lock);
+    if (lock.owns_lock())
+    {
+        listTask.push_back(pTask);
+        lock.unlock();
+        NotifyandWait(false);
+    }
+    else
+    {
+        strcpy(pszRcCode,"0002");
+        return 2;
+    }
 }
 
 int  QEvolisPrinter::Print_Retract(long lTimeout, int nBoxNo, char *pszRcCode)
@@ -562,10 +590,18 @@ int  QEvolisPrinter::Print_Retract(long lTimeout, int nBoxNo, char *pszRcCode)
     CheckPrinter(m_pPrinter);
     TaskPtr pTask = make_shared<Task>(Task_Print_Retract,pszRcCode,lTimeout);
     pTask->pValue = &nBoxNo;
-    unique_lock<mutex> lock(mtlistTask);
-    listTask.push_back(pTask);
-    lock.unlock();
-    NotifyandWait();
+    unique_lock<mutex> lock(mtlistTask,std::try_to_lock);
+    if (lock.owns_lock())
+    {
+        listTask.push_back(pTask);
+        lock.unlock();
+        NotifyandWait(false);
+    }
+    else
+    {
+        strcpy(pszRcCode,"0002");
+        return 2;
+    }
 }
 
 int  QEvolisPrinter::Print_Dispense(long lTimeout, int nBox, int nDispPos, char* pszRcCode)
@@ -575,10 +611,19 @@ int  QEvolisPrinter::Print_Dispense(long lTimeout, int nBox, int nDispPos, char*
     TaskPtr pTask = make_shared<Task>(Task_Print_Dispense,pszRcCode,lTimeout);
     int nArray[2] = {nBox,nDispPos};
     pTask->pValue = nArray;
-    unique_lock<mutex> lock(mtlistTask);
-    listTask.push_back(pTask);
-    lock.unlock();
-    NotifyandWait();
+    unique_lock<mutex> lock(mtlistTask,std::try_to_lock);
+    if (lock.owns_lock())
+    {
+        //unique_lock<mutex> lock(mtlistTask);
+        listTask.push_back(pTask);
+        lock.unlock();
+        NotifyandWait(false);
+    }
+    else
+    {
+        strcpy(pszRcCode,"0002");
+        return 2;
+    }
 }
 
 int  QEvolisPrinter::Print_GetBoxStatus(long lTimeout, Lithograph::LPLITHOGRAPHBOXINFO& lpBoxInfo, char* pszRcCode)
@@ -587,10 +632,19 @@ int  QEvolisPrinter::Print_GetBoxStatus(long lTimeout, Lithograph::LPLITHOGRAPHB
     CheckPrinter(m_pPrinter);
     TaskPtr pTask = make_shared<Task>(Task_Print_GetBoxStatus,pszRcCode,lTimeout);
     pTask->pValue = &lpBoxInfo;
-    unique_lock<mutex> lock(mtlistTask);
-    listTask.push_back(pTask);
-    lock.unlock();
-    NotifyandWait();
+
+    unique_lock<mutex> lock(mtlistTask,std::try_to_lock);
+    if (lock.owns_lock())
+    {
+        listTask.push_back(pTask);
+        lock.unlock();
+        NotifyandWait(true);
+    }
+    else
+    {
+        strcpy(pszRcCode,"0002");
+        return 2;
+    }
 }
 
 int  QEvolisPrinter::Print_Status(long lTimeout, Lithograph::LPLITHOGRAPHSTATUS &lpStatus, char *pszRcCode)
@@ -599,10 +653,18 @@ int  QEvolisPrinter::Print_Status(long lTimeout, Lithograph::LPLITHOGRAPHSTATUS 
     CheckPrinter(m_pPrinter);
     TaskPtr pTask = make_shared<Task>(Task_Print_Status,pszRcCode,lTimeout);
     pTask->pValue = &lpStatus;
-    unique_lock<mutex> lock(mtlistTask);
-    listTask.push_back(pTask);
-    lock.unlock();
-    NotifyandWait();
+    unique_lock<mutex> lock(mtlistTask,std::try_to_lock);
+    if (lock.owns_lock())
+    {
+        listTask.push_back(pTask);
+        lock.unlock();
+        NotifyandWait(true);
+    }
+    else
+    {
+        strcpy(pszRcCode,"0002");
+        return 2;
+    }
 }
 
 int  QEvolisPrinter::Print_InitPrint(long lTimeout, char *pszRcCode)
@@ -610,10 +672,18 @@ int  QEvolisPrinter::Print_InitPrint(long lTimeout, char *pszRcCode)
     Funclog();
     CheckPrinter(m_pPrinter);
     TaskPtr pTask = make_shared<Task>(Task_Print_InitPrint,pszRcCode,lTimeout);
-    unique_lock<mutex> lock(mtlistTask);
-    listTask.push_back(pTask);
-    lock.unlock();
-    NotifyandWait();
+    unique_lock<mutex> lock(mtlistTask,std::try_to_lock);
+    if (lock.owns_lock())
+    {
+        listTask.push_back(pTask);
+        lock.unlock();
+        NotifyandWait(false);
+    }
+    else
+    {
+        strcpy(pszRcCode,"0002");
+        return 2;
+    }
 }
 
 int  QEvolisPrinter::Print_StartPrint(long lTimeout, char *pszRcCode)
@@ -621,10 +691,18 @@ int  QEvolisPrinter::Print_StartPrint(long lTimeout, char *pszRcCode)
     Funclog();
     CheckPrinter(m_pPrinter);
     TaskPtr pTask = make_shared<Task>(Task_Print_StartPrint,pszRcCode,lTimeout);
-    unique_lock<mutex> lock(mtlistTask);
-    listTask.push_back(pTask);
-    lock.unlock();
-    NotifyandWait();
+    unique_lock<mutex> lock(mtlistTask,std::try_to_lock);
+    if (lock.owns_lock())
+    {
+        listTask.push_back(pTask);
+        lock.unlock();
+        NotifyandWait(false);
+    }
+    else
+    {
+        strcpy(pszRcCode,"0002");
+        return 2;
+    }
 }
 
 void QEvolisPrinter::run()
@@ -641,19 +719,19 @@ void QEvolisPrinter::run()
     while(bRunning)
     {
         unique_lock<mutex> locklist(mtlistTask);
-        RunlogF("Waiting for a new Task.\n");
+        //RunlogF("Waiting for a new Task.\n");
         cvTask.wait(locklist);
         if (listTask.size())
         {
-            RunlogF("Get a Task,listTask size:%d.\n",listTask.size());
-            TaskPtr pTask = listTask.front();
-            listTask.pop_front();
-            RunlogF("ProcessTask a Task.\n");
+            //RunlogF("Get a Task,listTask size:%d.\n",listTask.size());
+            TaskPtr pTask = listTask.front();            
+            //RunlogF("ProcessTask a Task.\n");
             pTask->nResult = ProcessTask(pTask);
-            RunlogF("Task Finished.\n");
+            listTask.pop_front();
+            //RunlogF("Task Finished.\n");
         }
         //unique_lock<mutex> CompleteLock(mtComplete);
-        RunlogF("Try to Send notify to Requestor.\n");
+        //RunlogF("Try to Send notify to Requestor.\n");
         cvComplete.notify_one();
     }
     RunlogF("JVM deatch current thread.\n");
