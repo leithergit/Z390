@@ -15,6 +15,22 @@
 #include <QAndroidJniEnvironment>
 #include "QAndroidAppPermissions.h"
 #include "./Z390/include/LithographPrinter.h"
+#include <QApplication>
+
+class QWaitCursor
+{
+public:
+    QWaitCursor()
+    {
+        QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    }
+    ~QWaitCursor()
+    {
+        QApplication::restoreOverrideCursor();
+    }
+};
+
+#define WaitCursor()  QWaitCursor qWait;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -128,7 +144,7 @@ public:
 
     void Printer_ICPowerOff();
 
-    void Printer_ICExchange();
+    void Printer_ICExchange(const char *szCmd);
 
     void Printer_Depense();
 protected:

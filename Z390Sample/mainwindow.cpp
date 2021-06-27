@@ -86,6 +86,7 @@ void MainWindow::OnRequestPermissionsResults(const QVariantList &results)
 
 void MainWindow::on_comboBox_Extracommand_currentIndexChanged(int index)
 {
+    WaitCursor();
     if (index != -1)
     {
         ui->comboBox_ExtracommandData->clear();
@@ -337,15 +338,15 @@ void MainWindow::Printer_ICPowerOff()
     }
 }
 
-void MainWindow::Printer_ICExchange()
+void MainWindow::Printer_ICExchange(const char *szCmd)
 {
     CheckPriner(pPrinter);
+    OutputMsg("IC Command = %s\tlength = %d.\n",szCmd,strlen(szCmd));
     char szRCode[1024] = {0};
     long lTimeout = 2000;
-    const char *szCmd = "0084000008";
     char szOut[1024] = {0};
     int nOutLen = 1024;
-    if (pPrinter->Print_IcExchange(lTimeout,(unsigned char *)szCmd,10,(unsigned char *)szOut,nOutLen,szRCode))
+    if (pPrinter->Print_IcExchange(lTimeout,(unsigned char *)szCmd,strlen(szCmd),(unsigned char *)szOut,nOutLen,szRCode))
         OutputMsg("Print_IcExchange Failed!\n");
     else
         OutputMsg("Print_IcExchange Succeed:%s!\n",szOut);
@@ -369,6 +370,7 @@ void MainWindow::Printer_Depense()
 
 void MainWindow::on_pushButton_ExtraCommand_clicked()
 {
+    WaitCursor();
     CheckPriner(pPrinter);
     char szRCode[1024] = {0};
     int x;
@@ -595,41 +597,49 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *e)
 
 void MainWindow::on_pushButton_PrinterOpen_clicked()
 {
+    WaitCursor();
     OpenPrinter();
 }
 
 void MainWindow::on_pushButton_PrinterInsert_clicked()
 {
+    WaitCursor();
     Printer_InsertCard();
 }
 
 void MainWindow::on_pushButton_PrinterEject_clicked()
 {
+    WaitCursor();
     Printer_EjectCard();
 }
 
 void MainWindow::on_pushButton_PrinterReject_clicked()
 {
+    WaitCursor();
     Printer_Retract();
 }
 
 void MainWindow::on_pushButton_PrinterClose_clicked()
 {
+    WaitCursor();
     ClosePrinter();
 }
 
 void MainWindow::on_pushButton_PrinterStatus_clicked()
 {
+    WaitCursor();
     Printer_GetStatus();
 }
 
 void MainWindow::on_pushButton_PrinterBoxStatus_clicked()
 {
+    WaitCursor();
     Printer_GetBoxStatus();
 }
 
 void MainWindow::on_pushButton_PrinterInit_clicked()
 {
+    WaitCursor();
     CheckPriner(pPrinter);
     long lTimeout = 2000;
     char szRCode[1024] = {0};
@@ -645,6 +655,7 @@ void MainWindow::on_pushButton_PrinterInit_clicked()
 
 void MainWindow::on_pushButton_PrinterSetImage_clicked()
 {
+    WaitCursor();
     //if (ui->checkBox_CheckPrinter->isChecked())
         CheckPriner(pPrinter);
     long lTimeout = 2000;
@@ -692,6 +703,7 @@ void MainWindow::on_pushButton_PrinterSetImage_clicked()
 
 void MainWindow::on_pushButton_PrinterSetText_clicked()
 {
+    WaitCursor();
     //if (ui->checkBox_CheckPrinter->isChecked())
         CheckPriner(pPrinter);
     long lTimeout = 2000;
@@ -735,8 +747,7 @@ void MainWindow::on_pushButton_PrinterSetText_clicked()
 ////    if (ui->checkBox_CheckPrinter->isChecked())
 ////    {
       string strFont = "宋体";
-      int nFontSize = 8;
-      pPrinter->Print_PrintText(lTimeout,"姓名 测试用户",nAngle,26,14,"宋体",size,1,0,szRCode);
+      pPrinter->Print_PrintText(lTimeout,"姓名  测试用户",nAngle,26,14,"宋体",size,1,0,szRCode);
       pPrinter->Print_PrintText(lTimeout,"社会保障号码  123456789012345678",nAngle,26,19,"宋体",size,1,0,szRCode);
       pPrinter->Print_PrintText(lTimeout,"社会保障卡号  ABCDEFGHIJKLMN",nAngle,26,24,"宋体",size,1,0,szRCode);
       pPrinter->Print_PrintText(lTimeout,"发卡日期  2019年9月27日",nAngle,26,29,"宋体",size,1,0,szRCode);
@@ -756,21 +767,27 @@ void MainWindow::on_pushButton_PrinterICOn_clicked()
 
 void MainWindow::on_pushButton_PrinterICExchange_clicked()
 {
-    Printer_ICExchange();
+    WaitCursor();
+    QString strICCommand = ui->comboBox_ICcommand->currentText();
+
+    Printer_ICExchange(strICCommand.toStdString().c_str());
 }
 
 void MainWindow::on_pushButton_PrinterICOff_clicked()
 {
+    WaitCursor();
     Printer_ICPowerOff();
 }
 
 void MainWindow::on_pushButton_PrinterStart_clicked()
 {
-     Printer_Start();
+    WaitCursor();
+    Printer_Start();
 }
 
 void MainWindow::on_pushButton_PrinterReset_clicked()
 {
+    WaitCursor();
     Printer_Reset();
 }
 
@@ -791,11 +808,12 @@ void MainWindow::on_radioButton_Reject_clicked()
 
 void MainWindow::on_pushButton_PrinterConfigure_Get_clicked()
 {
-
+    WaitCursor();
 }
 
 void MainWindow::on_pushButton_PrinterConfigure_Set_clicked()
 {
+    WaitCursor();
 //    CheckPriner(pPrinter);
 //    char szRCode[1024] = {0};
 //    int x;
