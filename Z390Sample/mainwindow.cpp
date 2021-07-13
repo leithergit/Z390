@@ -32,7 +32,7 @@ using namespace std;
 #define CheckPriner(x)     if (!x)    {    OutputMsg("Please Open printer!\n");    return;}
 
 #define CreatePrinter(x)     AutoPrinter PrintInstance; CLithographPrinter* x = PrintInstance.Printer();
-#define Result(x,f)  x = f; if (x < 0) {OutputMsg("Failed in %s:%d\n",#f,x);return;}else OutputMsg("Succeed in %s\n",#f);
+#define Result(x,f)  x = f; if (x != 0) {OutputMsg("Failed in %s:%d\n",#f,x);return;}else OutputMsg("Succeed in %s\n",#f);
 
 struct ExtraCommand
 {
@@ -54,8 +54,11 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+
     //setOrientation(SCREEN_ORIENTATION_LANDSCAPE);
     ui->setupUi(this);
+//    ui->pushButton_PrinterJob->hide();
+//    ui->lineEdit_Jobs->hide();
     for(auto var:cmdlist)
     {
         ui->comboBox_Extracommand->addItem(var.strCommand);
@@ -70,9 +73,16 @@ MainWindow::MainWindow(QWidget *parent)
                                           "android.permission.WRITE_EXTERNAL_STORAGE"};
     connect(pAppPerissions,&QAndroidAppPermissions::requestPermissionsResults,this,&MainWindow::OnRequestPermissionsResults);
     pAppPerissions->requestPermissions(strRequestPermissions);
+    connect(this,&MainWindow::RestoreButtons,this,&MainWindow::OnRestoreButtons);
 
 }
 
+ void MainWindow::OnRestoreButtons()
+ {
+     QList<QPushButton *>buttonlist = ui->tabWidget->findChildren<QPushButton *>();
+     for (auto var:buttonlist)
+         var->setEnabled(true);
+ }
 void MainWindow::OnRequestPermissionsResults(const QVariantList &results)
 {
     for (auto var:results)
@@ -102,13 +112,19 @@ MainWindow::~MainWindow()
 #define __countof(array) (sizeof(array)/sizeof(array[0]))
 void MainWindow::OutputMsg(const char *pFormat, ...)
 {
+    if (pThreadPrint)
+        return ;
     va_list args;
     va_start(args, pFormat);
     int nBuff;
     CHAR szBuffer[8192] = {0};
     nBuff = vsnprintf(szBuffer, __countof(szBuffer), pFormat, args);
     __android_log_write(ANDROID_LOG_INFO,"Debug",szBuffer);
-    ui->textEdit->insertPlainText(szBuffer);
+    QTime tNow = QTime::currentTime();
+    QString strText = tNow.toString();
+    strText += ' ';
+    strText += szBuffer;
+    ui->textEdit->insertPlainText(strText);
     va_end(args);
     QTextCursor cursor = ui->textEdit->textCursor();
     cursor.movePosition(QTextCursor::End);
@@ -185,17 +201,13 @@ void MainWindow::Printer_GetBoxStatus()
 
         OutputMsg("Print_GetBoxStatus Succeed,Boxes Count:%d\n",lpBoxInfo->nCount);
         OutputMsg("Card boxes status:\n");
-//        OutputMsg("卡箱号\t类型\t状态\t支持状态传感器\n");
-        OutputMsg("卡箱号\t");
-        OutputMsg("类型\t");
-        OutputMsg("状态\t");
-        OutputMsg("支持状态传感器\n");
+        OutputMsg("\tBoxNo\tType\tStatus\tSensorSupported\n");
+        //OutputMsg("BoxNo\tType\tStatus\tSensorSupported\n");
+        QString strLine ;
         for(int i = 0;i < lpBoxInfo->nCount;i++)
         {
-            OutputMsg("%d\t",lpBoxInfo->lpplist[i].byBoxNumber);
-            OutputMsg("%s\t",szBoxType[lpBoxInfo->lpplist[i].byType]);
-            OutputMsg("%s\t",szBoxStatus[lpBoxInfo->lpplist[i].byStatus]);
-            OutputMsg("%s\n",szSense[lpBoxInfo->lpplist[i].bHardwareSensor]);
+            strLine = QString("     %1       %2     %3      %4").arg(lpBoxInfo->lpplist[i].byBoxNumber).arg(szBoxType[lpBoxInfo->lpplist[i].byType]).arg(szBoxStatus[lpBoxInfo->lpplist[i].byStatus]).arg(szSense[lpBoxInfo->lpplist[i].bHardwareSensor]);
+            OutputMsg("%s\n",strLine.toStdString().c_str());
         }
     }
 }
@@ -228,6 +240,7 @@ void MainWindow::Printer_EjectCard()
 
  void MainWindow::Printer_Retract()
  {
+     __android_log_write(ANDROID_LOG_INFO,"Debug",__PRETTY_FUNCTION__);
      CheckPriner(pPrinter);
 
      char szRCode[1024] = {0};
@@ -255,6 +268,7 @@ void MainWindow::Printer_GetStatus()
 
 void MainWindow::Printer_Start()
 {
+    __android_log_write(ANDROID_LOG_INFO,"Debug",__PRETTY_FUNCTION__);
     CheckPriner(pPrinter);
     long lTimeout = 2000;
     char szRCode[1024] = {0};
@@ -349,12 +363,13 @@ void MainWindow::Printer_ICExchange(const char *szCmd)
     if (pPrinter->Print_IcExchange(lTimeout,(unsigned char *)szCmd,strlen(szCmd),(unsigned char *)szOut,nOutLen,szRCode))
         OutputMsg("Print_IcExchange Failed!\n");
     else
-        OutputMsg("Print_IcExchange Succeed:%s!\n",szOut);
+        OutputMsg("Print_IcExchange Succeed %d Byte:%s!\n",nOutLen,szOut);
 }
 
 
 void MainWindow::Printer_Depense()
 {
+    __android_log_write(ANDROID_LOG_INFO,"Debug",__PRETTY_FUNCTION__);
     CheckPriner(pPrinter);
     char szRCode[1024] = {0};
 
@@ -379,8 +394,8 @@ void MainWindow::on_pushButton_ExtraCommand_clicked()
     unsigned char szUID[1024] = {0};
     int nUidLen = 0;
     unsigned char szout[1024] = {0};
-    pPrinter->Print_IcPowerOff(lTimeout, szRCode);
-    Result(x,pPrinter->Print_IcPowerOn(lTimeout,szout,nArtlen,(unsigned char *)szUID,nUidLen,szRCode));
+    //pPrinter->Print_IcPowerOff(lTimeout, szRCode);
+    //Result(x,pPrinter->Print_IcPowerOn(lTimeout,szout,nArtlen,(unsigned char *)szUID,nUidLen,szRCode));
 
     QString qstrCommand = ui->comboBox_Extracommand->currentText();
     QByteArray baCommand = qstrCommand.toLatin1();
@@ -397,10 +412,9 @@ void MainWindow::on_pushButton_ExtraCommand_clicked()
     {
         OutputMsg("Print_ExtraCommand Succeed:\n");
         QString strmsg = QString::fromLocal8Bit((char *)szCommandout);
-        OutputMsg(strmsg.toStdString().c_str());
-        OutputMsg("\n");
+        OutputMsg("%s.\n",strmsg.toStdString().c_str());
     }
-    Result(x,pPrinter->Print_IcPowerOff(lTimeout, szRCode));
+    //Result(x,pPrinter->Print_IcPowerOff(lTimeout, szRCode));
 }
 
 enum Printer_Func
@@ -421,11 +435,9 @@ enum Printer_Func
 //void MainWindow::on_pushButton_Excute_clicked()
 //{
 //    Printer_Func nIndex = (Printer_Func)ui->comboBox_Function->currentIndex();
-
 //    switch (nIndex)
 //    {
 //        case Open_Printer:
-
 //            break;
 //        case Set_Overlayer:
 //            Printer_SetOverlayer();
@@ -640,6 +652,7 @@ void MainWindow::on_pushButton_PrinterBoxStatus_clicked()
 void MainWindow::on_pushButton_PrinterInit_clicked()
 {
     WaitCursor();
+    __android_log_write(ANDROID_LOG_INFO,"Debug",__PRETTY_FUNCTION__);
     CheckPriner(pPrinter);
     long lTimeout = 2000;
     char szRCode[1024] = {0};
@@ -656,12 +669,18 @@ void MainWindow::on_pushButton_PrinterInit_clicked()
 void MainWindow::on_pushButton_PrinterSetImage_clicked()
 {
     WaitCursor();
+    __android_log_write(ANDROID_LOG_INFO,"Debug",__PRETTY_FUNCTION__);
     //if (ui->checkBox_CheckPrinter->isChecked())
         CheckPriner(pPrinter);
     long lTimeout = 2000;
     char szRCode[1024] ={0};
 
     QString strFileImage = ui->lineEdit_graphpath->text();
+    if (strFileImage.size() <= 0)
+    {
+        OutputMsg("Plz Select a Image to Print!\n");
+        return;
+    }
     int nX = ui->lineEdit_graphX->text().toInt();
     int nY = ui->lineEdit_graphY->text().toInt();
     int nW = ui->lineEdit_graphW->text().toInt();
@@ -704,6 +723,7 @@ void MainWindow::on_pushButton_PrinterSetImage_clicked()
 void MainWindow::on_pushButton_PrinterSetText_clicked()
 {
     WaitCursor();
+    __android_log_write(ANDROID_LOG_INFO,"Debug",__PRETTY_FUNCTION__);
     //if (ui->checkBox_CheckPrinter->isChecked())
         CheckPriner(pPrinter);
     long lTimeout = 2000;
@@ -862,3 +882,78 @@ void MainWindow::on_pushButton_PrinterConfigure_Set_clicked()
         OutputMsg("Error: %s - %s\n", evolis_last_error_string(), strerror(errno));
     }
 }
+
+void MainWindow::on_pushButton_PrinterJob_clicked()
+{
+    //CheckPriner(pPrinter);
+    QString strFileImage = ui->lineEdit_graphpath->text();
+    if (strFileImage.size() <= 0)
+    {
+        OutputMsg("Plz Select a Image to Print!\n");
+        return;
+    }
+    nJobs = ui->lineEdit_Jobs->text().toUInt();
+    if (nJobs > 5)
+    {
+        if ( QMessageBox::question(this,"操作提醒","连续打印5张以上的卡片,可能比较耗时,在此期间您将无法执行其它操作,是否继续?",QMessageBox::Yes|QMessageBox::No) == QMessageBox::No)
+            return ;
+    }
+    if (pThreadPrint)
+    {
+        pThreadPrint->join();
+        delete pThreadPrint;
+        pThreadPrint = nullptr;
+    }
+    //PrintJos();
+    QList<QPushButton *>buttonlist = ui->tabWidget->findChildren<QPushButton *>();
+    for (auto var:buttonlist)
+        var->setEnabled(false);
+    pThreadPrint = new std::thread(&MainWindow::PrintJos,this);
+    if (pThreadPrint)
+    {
+        OutputMsg("连续作业任务已启动,请等待作业结束.\n" );
+    }
+}
+
+bool MainWindow::GetCardBoxStatus()
+{
+    char szRCode[1024] = {0};
+
+    long lTimeout = 2000;
+    Lithograph::LPLITHOGRAPHBOXINFO lpBoxInfo = new Lithograph::LITHOGRAPHBOXINFO;
+    if (pPrinter->Print_GetBoxStatus(lTimeout,lpBoxInfo,szRCode))
+    {
+       // OutputMsg("Print_GetBoxStatus Failed!\n");
+        return false;
+    }
+    else
+    {
+        for(int i = 0;i < lpBoxInfo->nCount;i++)
+        {
+            if (lpBoxInfo->lpplist[i].byType == 1 &&  //  发卡箱
+                lpBoxInfo->lpplist[i].byStatus == 2)  // 无卡
+                return false;
+        }
+    }
+    return true;
+}
+void MainWindow::PrintJos()
+{
+    for (int i = 0;i < nJobs;i ++)
+    {
+        if (!GetCardBoxStatus())
+        {
+             //OutputMsg("卡箱缺卡,连续作业任务中止.\n" );
+             break;
+        }
+        on_pushButton_PrinterInit_clicked();
+        Printer_Depense();
+        on_pushButton_PrinterSetText_clicked();
+        on_pushButton_PrinterSetImage_clicked();
+        Printer_Start();
+        Printer_Retract();
+    }
+    emit RestoreButtons();
+
+}
+

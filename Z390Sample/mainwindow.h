@@ -16,6 +16,9 @@
 #include "QAndroidAppPermissions.h"
 #include "./Z390/include/LithographPrinter.h"
 #include <QApplication>
+#include <thread>
+#include <chrono>
+using namespace std;
 
 class QWaitCursor
 {
@@ -123,6 +126,8 @@ public:
     AutoPrinter *pAutoPrinter = nullptr;
     Z390Ptr pPrinter = nullptr;
     QString toAndroidPath(QString path);
+    std::thread *pThreadPrint = nullptr;
+    int nJobs = 3;
 
     Q_INVOKABLE bool setOrientation(SCREEN_ORIENTATION orientation);
 
@@ -147,11 +152,18 @@ public:
     void Printer_ICExchange(const char *szCmd);
 
     void Printer_Depense();
+    void PrintJos();
+
+    bool GetCardBoxStatus();
 protected:
     bool eventFilter(QObject *obj, QEvent *e);
+signals:
+    void RestoreButtons();
+
 
 private slots:
 
+    void OnRestoreButtons();
     void on_pushButton_ExtraCommand_clicked();
 
     void on_comboBox_Extracommand_currentIndexChanged(int index);
@@ -211,6 +223,8 @@ private slots:
     void on_pushButton_PrinterConfigure_Get_clicked();
 
     void on_pushButton_PrinterConfigure_Set_clicked();
+
+    void on_pushButton_PrinterJob_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="Printer">
        <attribute name="title">
@@ -194,16 +194,16 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_12">
           <item>
-           <widget class="QLabel" name="label_11">
+           <widget class="QCheckBox" name="checkBox_SavePrintPage">
             <property name="text">
-             <string> 复位选项</string>
+             <string> 保存打印版面</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="checkBox_SavePrintPage">
+           <widget class="QLabel" name="label_11">
             <property name="text">
-             <string> 保存打印版面</string>
+             <string> 复位选项</string>
             </property>
            </widget>
           </item>
@@ -505,7 +505,7 @@
          <number>3</number>
         </property>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,2,2,2,2,1">
           <property name="spacing">
            <number>2</number>
           </property>
@@ -585,6 +585,38 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_PrinterJob">
+            <property name="minimumSize">
+             <size>
+              <width>80</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string> 连续作业</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_Jobs">
+            <property name="text">
+             <string>3</string>
+            </property>
+            <property name="placeholderText">
+             <string/>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
@@ -635,7 +667,7 @@
                 </size>
                </property>
                <property name="text">
-                <string/>
+                <string>/mnt/internal_sd/Z390/Base64Img.png</string>
                </property>
               </widget>
              </item>
@@ -848,7 +880,7 @@
              </size>
             </property>
             <property name="text">
-             <string>7</string>
+             <string>8</string>
             </property>
             <property name="clearButtonEnabled">
              <bool>false</bool>
@@ -911,7 +943,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,1,1,4">
+         <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,1,1,2">
           <item>
            <widget class="QPushButton" name="pushButton_PrinterICOn">
             <property name="minimumSize">

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>iso.bmp</file>
+        <file>SIMSUN.ttf</file>
+    </qresource>
+</RCC>

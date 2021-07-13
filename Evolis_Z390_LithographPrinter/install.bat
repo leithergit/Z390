@@ -1,0 +1,3 @@
+echo copy D:\Git\Z390\Release\libEvolis_Z390_LithographPrinter_armeabi-v7a.so D:\Git\Z390\Z390Sample\Z390\lib\armeabi-v7a
+copy /y ..\Release\libEvolis_Z390_LithographPrinter_armeabi-v7a.so ..\Z390Sample\Z390\lib\armeabi-v7a
+
