@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: ./app/libs/drvbase_interface_1.0.0.16.jar">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/app/libs/drvbase_interface_1.0.0.16.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: ./app/libs/android_log4j_1.0.0.4_gwi.jar">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/app/libs/android_log4j_1.0.0.4_gwi.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

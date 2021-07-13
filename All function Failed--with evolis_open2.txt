@@ -1,0 +1,262 @@
+
+E:\QtScrcpy-win-x64-v1.6.0>adb shell
+root@Z73:/ # logcat -c
+root@Z73:/ # logcat |grep -v "..Char"
+--------- beginning of main
+E/WifiStateMachine(  420): startDelayedScan send -> 25030 milli 10000
+E/WifiStateMachine(  420): [1,624,342,413,282 ms] noteScanstart no scan source uid -2
+E/WifiStateMachine(  420): [1,624,342,414,416 ms] noteScanEnd no scan source onTime=0
+E/WifiStateMachine(  420): wifi setScanResults statecom.android.server.wifi.WifiStateMachine$DisconnectedState@2a53136c sup_state=SCANNING debouncing=false mConnectionRequests=1 selection=<none>
+E/WifiStateMachine(  420): startDelayedScan send -> 25031 milli 10000
+E/WifiStateMachine(  420): [1,624,342,423,291 ms] noteScanstart no scan source uid -2
+E/WifiStateMachine(  420): [1,624,342,424,431 ms] noteScanEnd no scan source onTime=0
+E/WifiStateMachine(  420): wifi setScanResults statecom.android.server.wifi.WifiStateMachine$DisconnectedState@2a53136c sup_state=SCANNING debouncing=false mConnectionRequests=1 selection=<none>
+I/Debug   (23712): Z390 Evolis_Z390_LithographPrinter::Evolis_Z390_LithographPrinter()@266:
+I/Debug   (23712): Prepare QEvolisPrinter.
+I/Debug   (23712): Z390 QEvolisPrinter::QEvolisPrinter()@355:
+I/Debug   (23712): Z390 QEvolisPrinter::QEvolisPrinter()@355:####Current ThreadID:b4927c80####
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@631:
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@631:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 bool SetAndroidEnv()@281:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 bool SetAndroidEnv()@334:Try to evolis_set_android_env
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@641:Waiting for a new Task.
+I/Debug   (23712): Z390 void QEvolisPrinter::ExtractIso()@434:File /mnt/internal_sd/Z390/iso.bmp has already exist!
+I/Debug   (23712): Z390 void QEvolisPrinter::ExtractFont()@461:File /mnt/internal_sd/Z390/simsun.ttc has already exist!
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_Open(char *, char *, char *)@310:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Open(char *, char *, char *)@504:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Open(char *, char *, char *)@504:####Current ThreadID:b4927c80####
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Open(char *, char *, char *)@506:Put a task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Open(char *, char *, char *)@510:Send notify for a new task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Open(char *, char *, char *)@513:Wait for task complete.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@645:Get a Task,listTask size:1.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@648:ProcessTask a Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@664:Task Type :0.
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Open(char *, char *, char *)@701:
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Open(char *, char *, char *)@701:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Open(char *, char *, char *)@703:Try to evolis_get_devices.
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Open(char *, char *, char *)@710:evolis_get_devices Succeed.
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Open(char *, char *, char *)@712:Try to call evolis_open.
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Open(char *, char *, char *)@726:Try to evolis_command(Pcim;F).
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Open(char *, char *, char *)@729:Failed in evolis_command(Pcim;F).
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@650:Task Finished.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@653:Try to Send notify to Requestor.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@641:Waiting for a new Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Open(char *, char *, char *)@515:Task complete,Result = 1,RcCode = 0001.
+I/Debug   (23712): Succeed in pPrinter->Print_Open("","",szRCode)
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_Dispense(long, int, int, char *)@564:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Dispense(long, int, int, char *)@570:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Dispense(long, int, int, char *)@570:####Current ThreadID:b4927c80####
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Dispense(long, int, int, char *)@578:Send notify for a new task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Dispense(long, int, int, char *)@578:Wait for task complete.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@645:Get a Task,listTask size:1.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@648:ProcessTask a Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@664:Task Type :5.
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Dispense(long, int, int, char *)@902:
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Dispense(long, int, int, char *)@902:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Dispense(long, int, int, char *)@905:Try to evolis_set_input_tray(EVOLIS_IT_FEEDER).
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Dispense(long, int, int, char *)@910:Failed in evolis_set_input_tray(EVOLIS_IT_FEEDER).
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@650:Task Finished.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@653:Try to Send notify to Requestor.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@641:Waiting for a new Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Dispense(long, int, int, char *)@578:Task complete,Result = 1,RcCode = 0001.
+I/Debug   (23712): Failed in Print_Dispense:0001
+E/WifiStateMachine(  420): startDelayedScan send -> 25032 milli 10000
+E/WifiStateMachine(  420): [1,624,342,433,295 ms] noteScanstart no scan source uid -2
+E/WifiStateMachine(  420): [1,624,342,434,432 ms] noteScanEnd no scan source onTime=0
+E/WifiStateMachine(  420): wifi setScanResults statecom.android.server.wifi.WifiStateMachine$DisconnectedState@2a53136c sup_state=SCANNING debouncing=false mConnectionRequests=1 selection=<none>
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_Eject(long, char *)@401:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Eject(long, char *)@547:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Eject(long, char *)@547:####Current ThreadID:b4927c80####
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Eject(long, char *)@553:Send notify for a new task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Eject(long, char *)@553:Wait for task complete.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@645:Get a Task,listTask size:1.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@648:ProcessTask a Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@664:Task Type :3.
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Eject(long, char *)@832:
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Eject(long, char *)@832:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Eject(long, char *)@839:Try to evolis_command(Pneab;A;1).
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Eject(long, char *)@844:Failed in evolis_command(Pneab;A;1).
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@650:Task Finished.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@653:Try to Send notify to Requestor.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@641:Waiting for a new Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Eject(long, char *)@553:Task complete,Result = 1,RcCode = 0001.
+I/Debug   (23712): Failed in Print_Eject:0001
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_Retract(long, int, char *)@416:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Retract(long, int, char *)@558:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Retract(long, int, char *)@558:####Current ThreadID:b4927c80####
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Retract(long, int, char *)@565:Send notify for a new task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Retract(long, int, char *)@565:Wait for task complete.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@645:Get a Task,listTask size:1.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@648:ProcessTask a Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@664:Task Type :4.
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Retract(long, int, char *)@865:
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Retract(long, int, char *)@865:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Retract(long, int, char *)@874:Try to evolis_command(Pneab;A;1).
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Retract(long, int, char *)@877:evolis_command(Pneab;A;1)failed.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@650:Task Finished.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@653:Try to Send notify to Requestor.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@641:Waiting for a new Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Retract(long, int, char *)@565:Task complete,Result = 1,RcCode = 0002.
+I/Debug   (23712): Failed in Print_Retract:0002
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_Status(long, Lithograph::LPLITHOGRAPHSTATUS &, char *)@600:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Status(long, Lithograph::LPLITHOGRAPHSTATUS &, char *)@595:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Status(long, Lithograph::LPLITHOGRAPHSTATUS &, char *)@595:####Current ThreadID:b4927c80####
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Status(long, Lithograph::LPLITHOGRAPHSTATUS &, char *)@602:Send notify for a new task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Status(long, Lithograph::LPLITHOGRAPHSTATUS &, char *)@602:Wait for task complete.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@645:Get a Task,listTask size:1.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@648:ProcessTask a Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@664:Task Type :7.
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Status(long, Lithograph::LPLITHOGRAPHSTATUS &, char *)@1018:
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_Status(long, Lithograph::LPLITHOGRAPHSTATUS &, char *)@1018:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::GetPrinterStatus(void *, int *, int *, int *)@1157:
+I/Debug   (23712): Z390 int QEvolisPrinter::GetPrinterStatus(void *, int *, int *, int *)@1157:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::GetPrinterStatus(void *, int *, int *, int *)@1166:Try to evolis_get_ribbon.
+I/Debug   (23712): Z390 int QEvolisPrinter::GetPrinterStatus(void *, int *, int *, int *)@1170:Failed in evolis_get_ribbon.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@650:Task Finished.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@653:Try to Send notify to Requestor.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@641:Waiting for a new Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_Status(long, Lithograph::LPLITHOGRAPHSTATUS &, char *)@602:Task complete,Result = 1,RcCode = 0002.
+I/Debug   (23712): Print_StartPrint Failed!
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_GetBoxStatus(long, Lithograph::LPLITHOGRAPHBOXINFO &, char *)@580:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_GetBoxStatus(long, Lithograph::LPLITHOGRAPHBOXINFO &, char *)@583:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_GetBoxStatus(long, Lithograph::LPLITHOGRAPHBOXINFO &, char *)@583:####Current ThreadID:b4927c80####
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_GetBoxStatus(long, Lithograph::LPLITHOGRAPHBOXINFO &, char *)@590:Send notify for a new task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_GetBoxStatus(long, Lithograph::LPLITHOGRAPHBOXINFO &, char *)@590:Wait for task complete.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@645:Get a Task,listTask size:1.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@648:ProcessTask a Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@664:Task Type :6.
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_GetBoxStatus(long, Lithograph::LPLITHOGRAPHBOXINFO &, char *)@942:
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_GetBoxStatus(long, Lithograph::LPLITHOGRAPHBOXINFO &, char *)@942:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_GetBoxStatus(long, Lithograph::LPLITHOGRAPHBOXINFO &, char *)@948:Try to evolis_command(Rlr;p).
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_GetBoxStatus(long, Lithograph::LPLITHOGRAPHBOXINFO &, char *)@951:evolis_command(Rlr;p) Failed.
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_GetBoxStatus(long, Lithograph::LPLITHOGRAPHBOXINFO &, char *)@948:Try to evolis_command((null)).
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_GetBoxStatus(long, Lithograph::LPLITHOGRAPHBOXINFO &, char *)@951:evolis_command((null)) Failed.
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_GetBoxStatus(long, Lithograph::LPLITHOGRAPHBOXINFO &, char *)@961:Try to evolis_command(Rse;f).
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_GetBoxStatus(long, Lithograph::LPLITHOGRAPHBOXINFO &, char *)@966:Faild in evolis_command(Rse;f),Reply:
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@650:Task Finished.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@653:Try to Send notify to Requestor.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@641:Waiting for a new Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_GetBoxStatus(long, Lithograph::LPLITHOGRAPHBOXINFO &, char *)@590:Task complete,Result = 1,RcCode = 0001.
+I/Debug   (23712): Print_GetBoxStatus Failed!
+E/WifiStateMachine(  420): startDelayedScan send -> 25033 milli 10000
+E/WifiStateMachine(  420): [1,624,342,443,305 ms] noteScanstart no scan source uid -2
+E/WifiStateMachine(  420): [1,624,342,444,442 ms] noteScanEnd no scan source onTime=0
+E/WifiStateMachine(  420): wifi setScanResults statecom.android.server.wifi.WifiStateMachine$DisconnectedState@2a53136c sup_state=SCANNING debouncing=false mConnectionRequests=1 selection=<none>
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_InitPrint(long, char *)@614:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_InitPrint(long, char *)@607:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_InitPrint(long, char *)@607:####Current ThreadID:b4927c80####
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_InitPrint(long, char *)@613:Send notify for a new task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_InitPrint(long, char *)@613:Wait for task complete.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@645:Get a Task,listTask size:1.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@648:ProcessTask a Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@664:Task Type :8.
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_InitPrint(long, char *)@1052:
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_InitPrint(long, char *)@1052:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_InitPrint(long, char *)@1063:Try to evolis_command(Pneab;E).
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_InitPrint(long, char *)@1067:
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@650:Task Finished.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@653:Try to Send notify to Requestor.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@641:Waiting for a new Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_InitPrint(long, char *)@613:Task complete,Result = 1,RcCode = 0002.
+I/Debug   (23712): Print_InitPrint Failed!
+--------- beginning of system
+I/ActivityStackSupervisor(  420): START u0 {act=android.intent.action.OPEN_DOCUMENT cat=[android.intent.category.OPENABLE] typ=*/* cmp=com.android.documentsui/.DocumentsActivity (has extras)} from uid 10062 on display 0
+I/System.out(  420): com.android.documentsui.DocumentsActivityaddAppToken taskId:307
+D/WindowManagerService(  420): null  ==========setInputFocusLw ==========  =======
+D/DisplayManager( 7818): getDisplayInfo: displayId=0, info=DisplayInfo{"内置屏幕", uniqueId "local:0", app 1280 x 648, real 1280 x 720, largest app 1280 x 1170, smallest app 720 x 610, 42.534 fps, supportedRefreshRates [42.534], rotation 0, density 240 (160.15764 x 160.42105) dpi, layerStack 0, appVsyncOff 0, presDeadline 24510603, type BUILT_IN, state ON, FLAG_SECURE, FLAG_SUPPORTS_PROTECTED_BUFFERS}
+D/PhoneWindow( 7818): DecorView - SCREEN_WEITH = 1280 - SCREE_HEIGHT = 648
+D/DisplayManager( 7818): getDisplayInfo: displayId=0, info=DisplayInfo{"内置屏幕", uniqueId "local:0", app 1280 x 648, real 1280 x 720, largest app 1280 x 1170, smallest app 720 x 610, 42.534 fps, supportedRefreshRates [42.534], rotation 0, density 240 (160.15764 x 160.42105) dpi, layerStack 0, appVsyncOff 0, presDeadline 24510603, type BUILT_IN, state ON, FLAG_SECURE, FLAG_SUPPORTS_PROTECTED_BUFFERS}
+V/WindowManagerService(  420): Adding window Window{22b07f3d u0 com.android.documentsui/com.android.documentsui.DocumentsActivity} at 5 of 11 (after Window{1fcc24c9 u0 org.qtproject.example/org.qtproject.qt5.android.bindings.QtActivity})
+D/ViewRootImpl( 7818): onAttachToWindow register content observer attrs=WM.LayoutParams{(0,0)(fillxfill)mPosX=0mPosY=0mHScale=1.0mVScale=1.0 align=UNDEFINE taskId=307 sim=#100 ty=1 fl=#81810100 wanim=0x1030383 surfaceInsets=Rect(0, 0 - 0, 0) needsMenuKey=2packageName=com.android.documentsuitoken=android.os.BinderProxy@104afb5c}
+D/WindowManagerService(  420): Window{22b07f3d u0 com.android.documentsui/com.android.documentsui.DocumentsActivity}  ==========setInputFocusLw ==========  =======
+D/ViewRootImpl( 7818): 1280<<<<<< BACK FROM relayoutWM.LayoutParams{(0,0)(fillxfill)mPosX=0mPosY=0mHScale=1.0mVScale=1.0 align=UNDEFINE taskId=307 sim=#110 ty=1 fl=#81810100 wanim=0x1030383 surfaceInsets=Rect(0, 0 - 0, 0) needsMenuKey=2packageName=com.android.documentsuitoken=android.os.BinderProxy@104afb5c}
+D/Documents( 7818): Current stack:
+D/Documents( 7818):  * Root{authority=com.android.externalstorage.documents, rootId=69A5-18F2, title=ROCKCHIP}
+D/Documents( 7818):  +-- Document{docId=69A5-18F2:, name=internal_sd}
+D/ViewRootImpl( 7818): 1280<<<<<< BACK FROM relayoutWM.LayoutParams{(0,0)(fillxfill)mPosX=0mPosY=0mHScale=1.0mVScale=1.0 align=UNDEFINE taskId=307 sim=#120 ty=1 fl=#81810100 wanim=0x1030383 surfaceInsets=Rect(0, 0 - 0, 0) needsMenuKey=2packageName=com.android.documentsuitoken=android.os.BinderProxy@104afb5c}
+I/ActivityManagerService(  420): Displayed com.android.documentsui/.DocumentsActivity: +245ms
+D/Documents( 7818): userMode=0, userSortOrder=0 --> mode=1, sortOrder=1
+D/ViewRootImpl(23712): 1280<<<<<< BACK FROM relayoutnull
+E/WifiStateMachine(  420): startDelayedScan send -> 25034 milli 10000
+E/WifiStateMachine(  420): [1,624,342,453,308 ms] noteScanstart no scan source uid -2
+E/WifiStateMachine(  420): [1,624,342,454,454 ms] noteScanEnd no scan source onTime=0
+E/WifiStateMachine(  420): wifi setScanResults statecom.android.server.wifi.WifiStateMachine$DisconnectedState@2a53136c sup_state=SCANNING debouncing=false mConnectionRequests=1 selection=<none>
+W/AudioTrack(  420): AUDIO_OUTPUT_FLAG_FAST denied by client
+D/AudioHardwareTiny(  155): start_output_stream
+D/Documents( 7818): onFinished() [content://com.android.externalstorage.documents/document/69A5-18F2%3ABase64Img.png]
+D/alsa_route(  155): route_info->sound_card 0, route_info->devices 0
+D/alsa_route(  155): route_set_controls() set route 0
+D/WindowManagerService(  420): null  ==========setInputFocusLw ==========  =======
+D/ViewRootImpl(23712): 1280<<<<<< BACK FROM relayoutnull
+W/art     (23712): Attempt to remove local handle scope entry from IRT, ignoring
+D/libZ390Sample_armeabi-v7a.so(23712): "/mnt/internal_sd/Base64Img.png"
+D/WindowManagerService(  420): Window{1fcc24c9 u0 org.qtproject.example/org.qtproject.qt5.android.bindings.QtActivity}  ==========setInputFocusLw ==========  =======
+D/ViewRootImpl(23712): 1280<<<<<< BACK FROM relayoutnull
+I/Debug   (23712): /mnt/internal_sd/Sample.bmp
+D/ViewRootImpl( 7818): 1280<<<<<< BACK FROM relayoutnull
+D/Documents( 7818): userMode=0, userSortOrder=0 --> mode=1, sortOrder=1
+D/ViewRootImpl(23712): 1280<<<<<< BACK FROM relayoutWM.LayoutParams{(0,0)(fillxfill)mPosX=0mPosY=0mHScale=1.0mVScale=1.0 align=UNDEFINE taskId=307 sim=#20 ty=1 fl=#1810100 fmt=-3 wanim=0x10303e5 surfaceInsets=Rect(0, 0 - 0, 0) needsMenuKey=2packageName=org.qtproject.exampletoken=android.os.BinderProxy@2b248378}
+V/WindowManagerService(  420): Adding window Window{3102b156 u0 SurfaceView} at 3 of 11 (before Window{1fcc24c9 u0 org.qtproject.example/org.qtproject.qt5.android.bindings.QtActivity})
+I/art     ( 7818): Explicit concurrent mark sweep GC freed 4204(209KB) AllocSpace objects, 0(0B) LOS objects, 24% free, 7MB/9MB, paused 1.220ms total 58.062ms
+I/art     ( 7818): Explicit concurrent mark sweep GC freed 4568(390KB) AllocSpace objects, 0(0B) LOS objects, 25% free, 6MB/9MB, paused 912us total 41.333ms
+I/art     ( 7818): Explicit concurrent mark sweep GC freed 31(1200B) AllocSpace objects, 0(0B) LOS objects, 25% free, 6MB/9MB, paused 928us total 28.608ms
+D/ViewRootImpl( 7818): onDetachedFromWindow ungister contentObserver
+I/art     ( 1011): Note: end time exceeds epoch:
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_PrintImage(long, char *, int, float, float, float, float, char *)@634:
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_PrintImage(long, char *, int, float, float, float, float, char *)@644:
+I/Debug   (23712): pImage = /mnt/internal_sd/Base64Img.png, nAngle = 180, fxPos = 3.000000, fyPos = 11.000000, fHeight  = 25.000000, fWidth  = 20.000000
+I/Debug   (23712): Print_PrintImage Succeed!
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_PrintText(long, char *, int, float, float, char *, int, int, int, char *)@675:
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_PrintText(long, char *, int, float, float, char *, int, int, int, char *)@676:
+I/Debug   (23712): pText = 姓名 测试用户, nAngle = 180, fxPos = 26.000000, fyPos = 14.000000, pFontName = 宋体,nFontSize  = 8, nFontStyle  = 1, nColor = 0
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_PrintText(long, char *, int, float, float, char *, int, int, int, char *)@675:
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_PrintText(long, char *, int, float, float, char *, int, int, int, char *)@676:
+I/Debug   (23712): pText = 社会保障号码  123456789012345678, nAngle = 180, fxPos = 26.000000, fyPos = 19.000000, pFontName = 宋体,nFontSize  = 8, nFontStyle  = 1, nColor = 0
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_PrintText(long, char *, int, float, float, char *, int, int, int, char *)@675:
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_PrintText(long, char *, int, float, float, char *, int, int, int, char *)@676:
+I/Debug   (23712): pText = 社会保障卡号  ABCDEFGHIJKLMN, nAngle = 180, fxPos = 26.000000, fyPos = 24.000000, pFontName = 宋体,nFontSize  = 8, nFontStyle  = 1, nColor = 0
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_PrintText(long, char *, int, float, float, char *, int, int, int, char *)@675:
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_PrintText(long, char *, int, float, float, char *, int, int, int, char *)@676:
+I/Debug   (23712): pText = 发卡日期  2019年9月27日, nAngle = 180, fxPos = 26.000000, fyPos = 29.000000, pFontName = 宋体,nFontSize  = 8, nFontStyle  = 1, nColor = 0
+I/Debug   (23712): Print_PrintText Succeed!
+D/alsa_route(  155): route_set_controls() set route 24
+D/AudioHardwareTiny(  155): close device
+I/Debug   (23712): Z390 virtual int Evolis_Z390_LithographPrinter::Print_StartPrint(long, char *)@798:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_StartPrint(long, char *)@618:
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_StartPrint(long, char *)@618:####Current ThreadID:b4927c80####
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_StartPrint(long, char *)@624:Send notify for a new task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_StartPrint(long, char *)@624:Wait for task complete.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@645:Get a Task,listTask size:1.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@648:ProcessTask a Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@663:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::ProcessTask(TaskPtr)@664:Task Type :9.
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_StartPrint(long, char *)@1089:
+I/Debug   (23712): Z390 int QEvolisPrinter::On_Print_StartPrint(long, char *)@1089:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::PrintCard(PICINFO &, vector<TextInfoPtr> &, long)@1490:
+I/Debug   (23712): Z390 int QEvolisPrinter::PrintCard(PICINFO &, vector<TextInfoPtr> &, long)@1490:####Current ThreadID:af460c00####
+I/Debug   (23712): Z390 int QEvolisPrinter::PrintCard(PICINFO &, vector<TextInfoPtr> &, long)@1508:Try to evolis_print_init.
+I/Debug   (23712): Z390 int QEvolisPrinter::PrintCard(PICINFO &, vector<TextInfoPtr> &, long)@1511:evolis_print_init failed.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@650:Task Finished.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@653:Try to Send notify to Requestor.
+I/Debug   (23712): Z390 void QEvolisPrinter::run()@641:Waiting for a new Task.
+I/Debug   (23712): Z390 int QEvolisPrinter::Print_StartPrint(long, char *)@624:Task complete,Result = 1,RcCode = 0001.
+I/Debug   (23712): Print_StartPrint Failed!
+E/WifiStateMachine(  420): startDelayedScan send -> 25035 milli 10000
+E/WifiStateMachine(  420): [1,624,342,463,311 ms] noteScanstart no scan source uid -2
+E/WifiStateMachine(  420): [1,624,342,464,449 ms] noteScanEnd no scan source onTime=0
+E/WifiStateMachine(  420): wifi setScanResults statecom.android.server.wifi.WifiStateMachine$DisconnectedState@2a53136c sup_state=SCANNING debouncing=false mConnectionRequests=1 selection=<none>
