@@ -889,22 +889,32 @@ int  QEvolisPrinter::On_Print_Open(char *pPort, char *pPortParam, char *pszRcCod
         strcpy(pszRcCode, "0001");
         return 1;
     }
-    const char *szCmd[]={"Psmgr;2",     // 防止进卡和出卡阻塞
+    const char *szCmd[]={        // 取Zone
+                         "Psmgr;2",     // 防止进卡和出卡阻塞
                          "Pcim;F",      // 从卡箱进卡
                          "Pcem;M",      // 从出卡口出卡
-                         "Pneab;E"};    // 打印结束后不出卡
-    char szReply[16] = {0};
+                         "Pneab;E"       // 打印结束后不出卡
+                        };
+    char szReply[128] = {0};
 
-    for (int i = 0;i < sizeof(szCmd)/sizeof(char*);i ++)
+    RunlogF("Try to evolis_command(Rzp).\n");
+    if (evolis_command(m_pPrinter,"Rzp",3,szReply,sizeof(szReply)) < 0)
     {
-        RunlogF("Try to evolis_command(%s).\n",szCmd[i]);
-        if (evolis_command(m_pPrinter,szCmd[i],strlen(szCmd[i]),szReply,16) < 0)
+        RunlogF("Failed in evolis_command(Rzp).\n");
+        strcpy(pszRcCode, "0001");
+        return 1;
+    }
+
+    for (auto var:szCmd)
+    {
+        RunlogF("Try to evolis_command(%s).\n",var);
+        if (evolis_command(m_pPrinter,var,strlen(var),szReply,sizeof(szReply)) < 0)
         {
-            RunlogF("Failed in evolis_command(%s).\n",szCmd[i]);
+            RunlogF("Failed in evolis_command(%s).\n",var);
             strcpy(pszRcCode, "0001");
             return 1;
         }
-        RunlogF("evolis_command(%s) Succeed,Reply:%s.\n",szCmd[i],szReply);
+        RunlogF("evolis_command(%s) Succeed,Reply:%s.\n",var,szReply);
     }
 
     RunlogF("evolis_open Succeed.\n");
@@ -996,7 +1006,7 @@ int  QEvolisPrinter::On_Print_Eject(long lTimeout, char *pszRcCode)
     CheckPrinter(m_pPrinter);
 
     char szReply[1024] = { 0 };
-    const char* szCommand[] = {"Pneab;A;1","Pcem;M"};
+    const char* szCommand[] = {"Pneab;A;1","Pcem;M","Se"};
     for (auto var :szCommand)
     {
         RunlogF("Try to evolis_command(%s).\n",var);
@@ -1010,14 +1020,14 @@ int  QEvolisPrinter::On_Print_Eject(long lTimeout, char *pszRcCode)
          RunlogF("evolis_command(%s) Succeed,Reply:%s.\n",var,szReply);
     }
 
-    RunlogF("Try to evolis_set_card_pos(EVOLIS_CP_EJECT).\n");
-    if (evolis_set_card_pos(m_pPrinter,EVOLIS_CP_EJECT))
-    {
-        strcpy(pszRcCode, "0001");
-        RunlogF("Failed in evolis_set_card_pos(EVOLIS_CP_EJECT).\n");
-        return 1;
-    }
-    RunlogF("evolis_set_card_pos(EVOLIS_CP_EJECT) Succeed.\n");
+//    RunlogF("Try to evolis_set_card_pos(EVOLIS_CP_EJECT).\n");
+//    if (evolis_set_card_pos(m_pPrinter,EVOLIS_CP_EJECT))
+//    {
+//        strcpy(pszRcCode, "0001");
+//        RunlogF("Failed in evolis_set_card_pos(EVOLIS_CP_EJECT).\n");
+//        return 1;
+//    }
+//    RunlogF("evolis_set_card_pos(EVOLIS_CP_EJECT) Succeed.\n");
     nCardPosition = Pos_EjectCard;
     strcpy(pszRcCode, "0000");
     return 0;

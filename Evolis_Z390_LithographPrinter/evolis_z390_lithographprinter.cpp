@@ -122,6 +122,13 @@ extern "C"
     JNIEXPORT jint JNI_OnLoad(JavaVM *vm,void * reserved)
     {
         Q_UNUSED(reserved);
+        evolis_log_set_level(EVOLIS_LG_DEBUG);
+        evolis_log_set_level(EVOLIS_LG_ERROR);
+        auto tTime = std::chrono::system_clock::to_time_t(chrono::system_clock::now());
+        struct tm* ptm = localtime(&tTime);
+        char szLog[128] = {0};
+        sprintf(szLog,"/mnt/internal_sd/Z390/evolis_%02d%02d%02d.log",ptm->tm_year + 1900,ptm->tm_mon + 1,ptm->tm_mday);
+        evolis_log_set_path(szLog);
         jint nVersion[] = {JNI_VERSION_1_6,JNI_VERSION_1_4,JNI_VERSION_1_2,JNI_VERSION_1_1};
         JNIEnv *env = nullptr;
         for (int i = 0;i < 4;i ++)
