@@ -159,11 +159,16 @@ protected:
     bool eventFilter(QObject *obj, QEvent *e);
 signals:
     void RestoreButtons();
+    void AppendText(QString strTxt);
+    void ScrollToEnd();
 
 
 private slots:
 
     void OnRestoreButtons();
+    void OnAppendText(QString strText);
+    void OnScrollToEnd();
+
     void on_pushButton_ExtraCommand_clicked();
 
     void on_comboBox_Extracommand_currentIndexChanged(int index);

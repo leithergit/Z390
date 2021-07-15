@@ -426,7 +426,7 @@ extern "C"
     {
         Funclog();
         if (pEvolisPriner)
-            return pEvolisPriner->Print_Eject(lTimeout,pszRcCode);
+            return pEvolisPriner->Print_EjectSync(lTimeout,pszRcCode);
         else
         {
             strcpy(pszRcCode,"0001");

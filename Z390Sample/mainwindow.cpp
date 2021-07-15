@@ -74,6 +74,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(pAppPerissions,&QAndroidAppPermissions::requestPermissionsResults,this,&MainWindow::OnRequestPermissionsResults);
     pAppPerissions->requestPermissions(strRequestPermissions);
     connect(this,&MainWindow::RestoreButtons,this,&MainWindow::OnRestoreButtons);
+    connect(this,&MainWindow::AppendText,this,&MainWindow::OnAppendText);
+    connect(this,&MainWindow::ScrollToEnd,this,&MainWindow::OnScrollToEnd);
 
 }
 
@@ -82,6 +84,18 @@ MainWindow::MainWindow(QWidget *parent)
      QList<QPushButton *>buttonlist = ui->tabWidget->findChildren<QPushButton *>();
      for (auto var:buttonlist)
          var->setEnabled(true);
+ }
+
+ void  MainWindow::OnAppendText(QString strText)
+ {
+     ui->textEdit->append(strText);
+     QTextCursor cursor = ui->textEdit->textCursor();
+     cursor.movePosition(QTextCursor::End);
+     ui->textEdit->setTextCursor(cursor);
+ }
+ void  MainWindow::OnScrollToEnd()
+ {
+
  }
 void MainWindow::OnRequestPermissionsResults(const QVariantList &results)
 {
@@ -124,11 +138,8 @@ void MainWindow::OutputMsg(const char *pFormat, ...)
     QString strText = tNow.toString();
     strText += ' ';
     strText += szBuffer;
-    ui->textEdit->insertPlainText(strText);
     va_end(args);
-    QTextCursor cursor = ui->textEdit->textCursor();
-    cursor.movePosition(QTextCursor::End);
-    ui->textEdit->setTextCursor(cursor);
+    emit AppendText(strText);
 }
 
 void MainWindow::OpenPrinter()
@@ -923,7 +934,7 @@ bool MainWindow::GetCardBoxStatus()
     Lithograph::LPLITHOGRAPHBOXINFO lpBoxInfo = new Lithograph::LITHOGRAPHBOXINFO;
     if (pPrinter->Print_GetBoxStatus(lTimeout,lpBoxInfo,szRCode))
     {
-       // OutputMsg("Print_GetBoxStatus Failed!\n");
+        OutputMsg("Print_GetBoxStatus Failed!\n");
         return false;
     }
     else
@@ -939,11 +950,13 @@ bool MainWindow::GetCardBoxStatus()
 }
 void MainWindow::PrintJos()
 {
+    OutputMsg("开始连打印作业.\n" );
     for (int i = 0;i < nJobs;i ++)
     {
+        OutputMsg("执行第%d轮.\n",i + 1);
         if (!GetCardBoxStatus())
         {
-             //OutputMsg("卡箱缺卡,连续作业任务中止.\n" );
+             OutputMsg("卡箱缺卡,连续作业任务中止.\n" );
              break;
         }
         on_pushButton_PrinterInit_clicked();
@@ -951,7 +964,8 @@ void MainWindow::PrintJos()
         on_pushButton_PrinterSetText_clicked();
         on_pushButton_PrinterSetImage_clicked();
         Printer_Start();
-        Printer_Retract();
+        Printer_GetStatus();
+        Printer_EjectCard();
     }
     emit RestoreButtons();
 

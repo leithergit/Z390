@@ -189,6 +189,8 @@ public:
 
     int  Print_Eject(long lTimeout, char *pszRcCode);
 
+    int  Print_EjectSync(long lTimeout, char *pszRcCode);
+
     int  Print_Retract(long lTimeout, int nBoxNo, char *pszRcCode);
 
     int  Print_RetractSync(long lTimeout, int nBoxNo, char *pszRcCode);
