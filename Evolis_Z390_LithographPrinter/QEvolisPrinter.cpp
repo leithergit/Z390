@@ -26,6 +26,7 @@
 #include "android.h"
 #include "evo-printers.h"
 #include "QEvolisPrinter.h"
+#include "AES.h"
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/freetype.hpp>
@@ -76,6 +77,13 @@ using namespace chrono;
 const int DPI = 300;
 
 extern JavaVM *g_JVM ; // 保存虚拟机
+
+// AES key
+unsigned char g_szAesKey[] =  {0x9d,0x06,0x93,0xce,0x80,0x8e,0x37,0xeb,0xd7,0xee,0x09,0x56,0xb5,0xae,0xb3,0xb0};
+// 区码F616的密文
+unsigned char g_szZoneKey1[16] =  {0x47,0x66,0xf2,0x21,0x79,0x07,0x4f,0xb7,0x28,0x3f,0x6f,0x3a,0x6d,0x17,0xa6,0xc0};
+// 区码F61A的密文
+unsigned char g_szZoneKey2[16] =  {0x99,0xf4,0xb4,0x85,0xb1,0x10,0xdf,0x75,0x1c,0xec,0xff,0xc8,0xa8,0x15,0xf7,0x38};
 
 
 #define LibVer          "Z390_1.0.0.5 "
@@ -909,9 +917,18 @@ int  QEvolisPrinter::On_Print_Open(char *pPort, char *pPortParam, char *pszRcCod
                             "Rrt;zone"  // 读色带区码
                             };
     const char *szDev[] = {"Printer","Ribbon"};
-   int nIndex = 0;
-   for(auto var:szAdapt)
-   {
+    unsigned char szZone1[16] = {0};
+    unsigned char szZone2[16] = {0};
+    memcpy(szZone1,g_szZoneKey1,16);
+    memcpy(szZone2,g_szZoneKey2,16);
+    AES aes(g_szAesKey);
+    aes.DeCrypt(szZone1);
+    aes.DeCrypt(szZone2);
+    //RunlogF("Zone1 = %s.\n",szZone1);
+    //RunlogF("Zone2 = %s.\n",szZone2);
+    int nIndex = 0;
+    for(auto var:szAdapt)
+    {
         RunlogF("Try to adapt %s.\n",szDev[nIndex]);
         if (evolis_command(m_pPrinter,var,strlen(var),szReply,sizeof(szReply)) < 0)
         {
@@ -922,8 +939,8 @@ int  QEvolisPrinter::On_Print_Open(char *pPort, char *pPortParam, char *pszRcCod
         //RunlogF("evolis_command(%s) Succeed,Reply:%s.\n",var,szReply);
         string strReply = szReply;
         std::transform(strReply.begin(),strReply.end(),strReply.begin(),::toupper);
-        if (strReply != "F616"  &&
-            strReply != "F61A")
+        if (strReply != (const char *)szZone1  &&
+            strReply != (const char *)szZone2)
         {
             RunlogF("The %s it not compatible with Z390!\n",szDev[nIndex]);
             evolis_close(m_pPrinter);

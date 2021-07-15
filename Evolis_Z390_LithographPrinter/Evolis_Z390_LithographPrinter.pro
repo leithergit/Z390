@@ -17,6 +17,7 @@ CONFIG += c++17
 
 
 SOURCES += \
+    AES.cpp \
     QEvolisPrinter.cpp \
     evolis_z390_lithographprinter.cpp \
     tinyxml/ZBase64.cpp \
@@ -31,6 +32,7 @@ INCLUDEPATH += $$PWD/SDK/Evolis_sdk/Include.2021.05.17\
 DEPENDPATH+=$$PWD/SDK/Evolis_sdk/lib/libevolis-android-22-armeabi-v7a\
                $$PWD/SDK/decard/armeabi-v7a
 HEADERS += \
+    AES.h \
     Evolis_Z390_LithographPrinter_global.h \
     LithographPrinter.h \
     QEvolisPrinter.h \
