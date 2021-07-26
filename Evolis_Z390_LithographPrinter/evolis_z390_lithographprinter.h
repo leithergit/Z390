@@ -296,7 +296,8 @@ public:
         int WriteCard4(long lTimeout, char* pCommand, LPVOID lpCmdIn, LPVOID& lpCmdOut, char* pszRcCode);
         int WriteCard5(long lTimeout, char* pCommand, LPVOID lpCmdIn, LPVOID& lpCmdOut, char* pszRcCode);
         int WriteCard6(long lTimeout, char* pCommand, LPVOID lpCmdIn, LPVOID& lpCmdOut, char* pszRcCode);
-        int WriteCard7(long lTimeout, char* pCommand, LPVOID lpCmdIn, LPVOID& lpCmdOut, char* pszRcCode);
+        int WriteCard7(long lTimeout, char* pCommand, LPVOID lpCmdIn, LPVOID& lpCmdOut, char* pszRcCode);        
+        int WriteCardDebug(long lTimeout, char* pCommand, LPVOID lpCmdIn, LPVOID& lpCmdOut, char* pszRcCode);
 		string CreateNode(std::string nodeName, std::string nodeVal);
 		int fPubExtractXML(char* xmlStr, char* code, char* content, char* retMsg);
 		int fXMLExtract(char* xmlstr, char* code, char* content, char* retMsg);

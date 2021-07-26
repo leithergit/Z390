@@ -86,7 +86,6 @@ unsigned char g_szZoneKey1[16] =  {0x47,0x66,0xf2,0x21,0x79,0x07,0x4f,0xb7,0x28,
 unsigned char g_szZoneKey2[16] =  {0x99,0xf4,0xb4,0x85,0xb1,0x10,0xdf,0x75,0x1c,0xec,0xff,0xc8,0xa8,0x15,0xf7,0x38};
 
 
-#define LibVer          "Z390_1.0.0.5 "
 #define RunlogF(...)    Runlog(__PRETTY_FUNCTION__,__LINE__,__VA_ARGS__);
 #define Funclog()       FuncRunlog(__PRETTY_FUNCTION__,__LINE__);  TraceFunction TF(__PRETTY_FUNCTION__,__LINE__);auto threadID = std::this_thread::get_id();RunlogF("####Current ThreadID:%08x####\n",threadID);
 
@@ -135,7 +134,7 @@ public:
 void FuncRunlog(const char* pFunction,int nLine)
 {
 
-    string strInfo = "Z390 ";
+    string strInfo = LibVer;
     strInfo += pFunction;
     strInfo += "@";
     strInfo += to_string(nLine);
@@ -444,6 +443,15 @@ QEvolisPrinter::QEvolisPrinter()
 //    {
 //        RunlogF("An exception occured when new a QApplication Instance.\n");
 //    }
+
+    evolis_log_set_level(EVOLIS_LG_DEBUG);
+    evolis_log_set_level(EVOLIS_LG_ERROR);
+    auto tTime = std::chrono::system_clock::to_time_t(chrono::system_clock::now());
+    struct tm* ptm = localtime(&tTime);
+    char szLog[128] = {0};
+    sprintf(szLog,"/mnt/internal_sd/Z390/evolis_%02d%02d%02d.log",ptm->tm_year + 1900,ptm->tm_mon + 1,ptm->tm_mday);
+    evolis_log_set_path(szLog);
+    sprintf(szLog,"/mnt/internal_sd/Z390/Z390_%02d%02d%02d.log",ptm->tm_year + 1900,ptm->tm_mon + 1,ptm->tm_mday);
 
     bRunning = true;
     pThread = new thread(&QEvolisPrinter::run,this);
