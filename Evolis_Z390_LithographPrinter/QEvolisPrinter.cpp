@@ -410,19 +410,18 @@ QEvolisPrinter::QEvolisPrinter()
 
     mapFontSize.insert(make_pair("小五",3.18));
     mapFontSize.insert(make_pair("8",3.18));
-    mapFontSize.insert(make_pair("s5",3.18));
 
     mapFontSize.insert(make_pair("六号",2.56));
     mapFontSize.insert(make_pair("6",2.56));
 
     mapFontSize.insert(make_pair("小六",2.29));
-    mapFontSize.insert(make_pair("s6",2.29));
+    mapFontSize.insert(make_pair("7",2.29));
 
     mapFontSize.insert(make_pair("七号",1.94));
-    mapFontSize.insert(make_pair("7",1.94));
+    mapFontSize.insert(make_pair("9",1.94));
 
-    //mapFontSize.insert(make_pair("八号",1.76));
-    //mapFontSize.insert(make_pair("S8",1.76));
+    mapFontSize.insert(make_pair("八号",1.76));
+    mapFontSize.insert(make_pair("10",1.76));
 
 //    const char *argv = "/data/app/com.example.crddriver_testtool-2/lib/arm/libEvolis_Z390_LithographPrinter_armeabi-v7a.so";
 //    int argc = 1;

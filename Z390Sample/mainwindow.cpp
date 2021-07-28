@@ -785,7 +785,7 @@ void MainWindow::on_pushButton_PrinterSetText_clicked()
 //        if (pPrinter->Print_PrintText(lTimeout,(char *)imageText.toStdString().c_str(),nAngle,x,y,"宋体",size,1,0,szRCode))
 //            OutputMsg("Print_PrintText Failed!\n");
 //        else
-            OutputMsg("Print_PrintText Succeed!\n");
+      OutputMsg("Print_PrintText Succeed!\n");
 ////    }
 ////    else
 ////        OutputMsg("Text has input!\n");
