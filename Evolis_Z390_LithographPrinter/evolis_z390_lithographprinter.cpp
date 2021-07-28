@@ -123,14 +123,14 @@ extern "C"
     {
         Q_UNUSED(reserved);
 
-        QFileInfo fidir("/mnt/internal_sd/Z390");
+        QFileInfo fidir("/sdcard/Z390");
         if (!fidir.isDir())
         {
-            RunlogF("Directory /mnt/internal_sd/Z390/ not exist,try to create...!\n");
+            RunlogF("Directory /sdcard/Z390/ not exist,try to create...!\n");
             QDir dir;
-            if(!dir.mkpath("/mnt/internal_sd/Z390/"))
+            if(!dir.mkpath("/sdcard/Z390/"))
             {
-                RunlogF("************Failed in creating directory '/mnt/internal_sd/Z390',may cause some exception!************\n");
+                RunlogF("************Failed in creating directory '/sdcard/Z390',may cause some exception!************\n");
             }
         }
 
@@ -270,13 +270,13 @@ extern "C"
 
     Evolis_Z390_LithographPrinter::Evolis_Z390_LithographPrinter()
     {
-        QFileInfo fidir("/mnt/internal_sd/Z390");
+        QFileInfo fidir("/sdcard/Z390");
         if (!fidir.isDir())
         {
-            RunlogF("Directory /mnt/internal_sd/Z390/ not exist,try to create...!\n");
+            RunlogF("Directory /sdcard/Z390/ not exist,try to create...!\n");
             QDir dir;
-            if(!dir.mkpath("/mnt/internal_sd/Z390/"))
-                RunlogF("Failed in creating directory /mnt/internal_sd/Z390,it may cause exceptions!\n");
+            if(!dir.mkpath("/sdcard/Z390/"))
+                RunlogF("Failed in creating directory /sdcard/Z390,it may cause exceptions!\n");
         }
         RunlogF("Prepare QEvolisPrinter.\n");
         pEvolisPriner = new QEvolisPrinter();

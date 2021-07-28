@@ -73,6 +73,7 @@ DISTFILES += \
     android/gradlew \
     android/gradlew.bat \
     android/res/values/libs.xml \
+    android/res/xml/device_filter.xml \
     android/src/com/evolis/examples/PathUtil.java \
     iso.bmp
 

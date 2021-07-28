@@ -385,43 +385,44 @@ QEvolisPrinter::QEvolisPrinter()
     mapFontSize.insert(make_pair("1",9.17));
 
     mapFontSize.insert(make_pair("小一",8.47));
-    mapFontSize.insert(make_pair("11",8.47));
+    mapFontSize.insert(make_pair("s1",8.47));
 
     mapFontSize.insert(make_pair("二号",7.76));
     mapFontSize.insert(make_pair("2",7.76));
 
     mapFontSize.insert(make_pair("小二",6.35));
-    mapFontSize.insert(make_pair("12",6.35));
+    mapFontSize.insert(make_pair("s2",6.35));
 
     mapFontSize.insert(make_pair("三号",5.64));
     mapFontSize.insert(make_pair("3",5.64));
 
     mapFontSize.insert(make_pair("小三",5.29));
-    mapFontSize.insert(make_pair("13",5.29));
+    mapFontSize.insert(make_pair("s3",5.29));
 
     mapFontSize.insert(make_pair("四号",4.94));
     mapFontSize.insert(make_pair("4",4.94));
 
     mapFontSize.insert(make_pair("小四",4.23));
-    mapFontSize.insert(make_pair("14",4.23));
+    mapFontSize.insert(make_pair("s4",4.23));
 
     mapFontSize.insert(make_pair("五号",3.70));
     mapFontSize.insert(make_pair("5",3.70));
 
-    mapFontSize.insert(make_pair("小五",3.18));    
+    mapFontSize.insert(make_pair("小五",3.18));
     mapFontSize.insert(make_pair("8",3.18));
+    mapFontSize.insert(make_pair("s5",3.18));
 
-//    mapFontSize.insert(make_pair("六号",2.56));
-//    mapFontSize.insert(make_pair("6",2.56));
+    mapFontSize.insert(make_pair("六号",2.56));
+    mapFontSize.insert(make_pair("6",2.56));
 
-//    mapFontSize.insert(make_pair("小六",2.29));
-//    mapFontSize.insert(make_pair("16",2.29));
+    mapFontSize.insert(make_pair("小六",2.29));
+    mapFontSize.insert(make_pair("s6",2.29));
 
-//    mapFontSize.insert(make_pair("七号",1.94));
-//    mapFontSize.insert(make_pair("7",1.94));
+    mapFontSize.insert(make_pair("七号",1.94));
+    mapFontSize.insert(make_pair("7",1.94));
 
-//    mapFontSize.insert(make_pair("八号",1.76));
-//    mapFontSize.insert(make_pair("8",1.76));
+    //mapFontSize.insert(make_pair("八号",1.76));
+    //mapFontSize.insert(make_pair("S8",1.76));
 
 //    const char *argv = "/data/app/com.example.crddriver_testtool-2/lib/arm/libEvolis_Z390_LithographPrinter_armeabi-v7a.so";
 //    int argc = 1;
@@ -449,68 +450,68 @@ QEvolisPrinter::QEvolisPrinter()
     auto tTime = std::chrono::system_clock::to_time_t(chrono::system_clock::now());
     struct tm* ptm = localtime(&tTime);
     char szLog[128] = {0};
-    sprintf(szLog,"/mnt/internal_sd/Z390/evolis_%02d%02d%02d.log",ptm->tm_year + 1900,ptm->tm_mon + 1,ptm->tm_mday);
+    sprintf(szLog,"/sdcard/Z390/evolis_%02d%02d%02d.log",ptm->tm_year + 1900,ptm->tm_mon + 1,ptm->tm_mday);
     evolis_log_set_path(szLog);
-    sprintf(szLog,"/mnt/internal_sd/Z390/Z390_%02d%02d%02d.log",ptm->tm_year + 1900,ptm->tm_mon + 1,ptm->tm_mday);
+    sprintf(szLog,"/sdcard/Z390/Z390_%02d%02d%02d.log",ptm->tm_year + 1900,ptm->tm_mon + 1,ptm->tm_mday);
 
     bRunning = true;
     pThread = new thread(&QEvolisPrinter::run,this);
     this_thread::sleep_for(std::chrono::milliseconds(250));
     ExtractIso();
     ExtractFont();
-    strOverlayer = "/mnt/internal_sd/Z390/iso.bmp";
+    strOverlayer = "/sdcard/Z390/iso.bmp";
 }
 
 void QEvolisPrinter::ExtractIso()
 {
-    QFileInfo fi("/mnt/internal_sd/Z390/iso.bmp");
+    QFileInfo fi("/sdcard/Z390/iso.bmp");
     if (fi.isFile())
     {
-        RunlogF("File /mnt/internal_sd/Z390/iso.bmp has already exist!\n");
+        RunlogF("File /sdcard/Z390/iso.bmp has already exist!\n");
         return ;
     }
-    RunlogF("/mnt/internal_sd/Z390/iso.bmp not exist,try to create...!\n");
-    QFileInfo fidir("/mnt/internal_sd/Z390");
+    RunlogF("/sdcard/Z390/iso.bmp not exist,try to create...!\n");
+    QFileInfo fidir("/sdcard/Z390");
     if (!fidir.isDir())
     {
-        RunlogF("Directory /mnt/internal_sd/Z390/ not exist,try to create...!\n");
+        RunlogF("Directory /sdcard/Z390/ not exist,try to create...!\n");
         QDir dir;
-        if(!dir.mkpath("/mnt/internal_sd/Z390/"))
+        if(!dir.mkpath("/sdcard/Z390/"))
         {
-            RunlogF("Failed in creating directory /mnt/internal_sd/Z390 !\n");
+            RunlogF("Failed in creating directory /sdcard/Z390 !\n");
             return ;
         }
     }
-    RunlogF("Try to create file /mnt/internal_sd/Z390/iso.bmp!\n");
-    if (!QFile::copy(":/iso.bmp","/mnt/internal_sd/Z390/iso.bmp"))
-        RunlogF("Failed in creating file /mnt/internal_sd/Z390/iso.bmp!\n");
+    RunlogF("Try to create file /sdcard/Z390/iso.bmp!\n");
+    if (!QFile::copy(":/iso.bmp","/sdcard/Z390/iso.bmp"))
+        RunlogF("Failed in creating file /sdcard/Z390/iso.bmp!\n");
 
-    strOverlayer = "/mnt/internal_sd/Z390/iso.bmp";
+    strOverlayer = "/sdcard/Z390/iso.bmp";
 }
 
 void QEvolisPrinter::ExtractFont()
 {
-    QFileInfo fi("/mnt/internal_sd/Z390/simsun.ttc");
+    QFileInfo fi("/sdcard/Z390/simsun.ttc");
     if (fi.isFile())
     {
-        RunlogF("File /mnt/internal_sd/Z390/simsun.ttc has already exist!\n");
+        RunlogF("File /sdcard/Z390/simsun.ttc has already exist!\n");
         return ;
     }
-    RunlogF("/mnt/internal_sd/Z390/simsun.ttc not exist,try to create...!\n");
-    QFileInfo fidir("/mnt/internal_sd/Z390");
+    RunlogF("/sdcard/Z390/simsun.ttc not exist,try to create...!\n");
+    QFileInfo fidir("/sdcard/Z390");
     if (!fidir.isDir())
     {
-        RunlogF("Directory /mnt/internal_sd/Z390/ not exist,try to create...!\n");
+        RunlogF("Directory /sdcard/Z390/ not exist,try to create...!\n");
         QDir dir;
-        if(!dir.mkpath("/mnt/internal_sd/Z390/"))
+        if(!dir.mkpath("/sdcard/Z390/"))
         {
-            RunlogF("Failed in creating directory /mnt/internal_sd/Z390 !\n");
+            RunlogF("Failed in creating directory /sdcard/Z390 !\n");
             return ;
         }
     }
-    RunlogF("Try to create file /mnt/internal_sd/Z390/simsun.ttc!\n");
-    if (!QFile::copy(":/SIMSUN.ttf","/mnt/internal_sd/Z390/simsun.ttc"))
-        RunlogF("Failed in creating file /mnt/internal_sd/Z390/simsun.ttc!\n");
+    RunlogF("Try to create file /sdcard/Z390/simsun.ttc!\n");
+    if (!QFile::copy(":/SIMSUN.ttf","/sdcard/Z390/simsun.ttc"))
+        RunlogF("Failed in creating file /sdcard/Z390/simsun.ttc!\n");
 }
 QEvolisPrinter::~QEvolisPrinter()
 {
@@ -935,6 +936,7 @@ int  QEvolisPrinter::On_Print_Open(char *pPort, char *pPortParam, char *pszRcCod
     //RunlogF("Zone1 = %s.\n",szZone1);
     //RunlogF("Zone2 = %s.\n",szZone2);
     int nIndex = 0;
+    // 色带区码标签 1046==F61A,98C=F616
     for(auto var:szAdapt)
     {
         RunlogF("Try to adapt %s.\n",szDev[nIndex]);
@@ -1668,7 +1670,7 @@ int QEvolisPrinter::SetDarkTextRegion(int nLeft, int nTop, int nRight, int nBott
 ////        RunlogF("evolis_print_set_option(IFDarkLevelValue,%s) Succeed.\n",strIFDarkLevelValue.c_str());
 ////    }
 
-//    strOverlayer = "/mnt/internal_sd/Z390/iso.bmp";
+//    strOverlayer = "/sdcard/Z390/iso.bmp";
 //    QFileInfo fi(strOverlayer.c_str());
 //    if (!fi.isFile())
 //    {
@@ -1843,7 +1845,7 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, list<TextInfoPtr>& inTextVecto
         }
         int fontHeight = (int)round(MM2Pixel(itFind->second));
         //RunlogF("Text = %s,FontSize = %.2f, FontPixel = %d.\n",var->sText.c_str(),itFind->second,fontHeight);
-        //CVText_CN cvTextCn("/mnt/internal_sd/Z390/simsun.ttc", MM2Pixel(itFind->second),var->nFontStyle==2);
+        //CVText_CN cvTextCn("/sdcard/", MM2Pixel(itFind->second),var->nFontStyle==2);
         //wchar_t szUnicode[1024] = {0};
         //mbstowcs(szUnicode,var->sText.c_str(),var->sText.size());
         //cvTextCn.putText(&FontImag, szUnicode, cvPoint(0,nPixelSize - 3), cvScalar(CV_RGB(0, 0, 0)));
@@ -1853,7 +1855,7 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, list<TextInfoPtr>& inTextVecto
             cv::Ptr<cv::freetype::FreeType2> ft2;
             ft2 = cv::freetype::createFreeType2();
 
-            ft2->loadFontData("/mnt/internal_sd/Z390/simsun.ttc", 0); //加载字库文件
+            ft2->loadFontData("/sdcard/Z390/simsun.ttc", 0); //加载字库文件
             ft2->putText(FontROI, var->sText.c_str(), cv::Point(0, 0), fontHeight, CV_RGB(0, 0, 0), -1, CV_AA, false,var->nFontStyle == 2);
         }
         catch (std::exception &e)
@@ -1866,7 +1868,7 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, list<TextInfoPtr>& inTextVecto
 
     if (strPreviewFile.size())
         imwrite(strPreviewFile.c_str(),canvas);
-    const char *szTempFile = "/mnt/internal_sd/Z390/PrintPreview.bmp";
+    const char *szTempFile = "/sdcard/Z390/PrintPreview.bmp";
     if (inPicInfo.nAngle > 0)
     {
         //0: 沿X轴翻转； >0: 沿Y轴翻转； <0: 沿X轴和Y轴翻转
@@ -1875,7 +1877,7 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, list<TextInfoPtr>& inTextVecto
     }
     imwrite(szTempFile,canvas);
 
-    strOverlayer = "/mnt/internal_sd/Z390/iso.bmp";
+    strOverlayer = "/sdcard/Z390/iso.bmp";
     QFileInfo fi(strOverlayer.c_str());
     if (!fi.isFile())
     {

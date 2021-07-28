@@ -65,7 +65,7 @@ public:
     AutoPrinter()
     {
         memset(szError,0,1024);
-        pLibhandle = dlopen("./libEvolis_Z390_LithographPrinter_armeabi-v7a.so",RTLD_NOW);
+        pLibhandle = dlopen("libEvolis_Z390_LithographPrinter_armeabi-v7a.so",RTLD_NOW);
         if (pLibhandle)
         {
             pCreateInst = (pCreateInstance) dlsym(pLibhandle,"CreateInstance");
