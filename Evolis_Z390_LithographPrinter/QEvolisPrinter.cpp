@@ -369,59 +369,34 @@ bool SetAndroidEnv()
 //}
 
 //QApplication* pApp = nullptr;
+float Pt2MM(float pt)
+{
+    return pt/2.845;
+}
 
 QEvolisPrinter::QEvolisPrinter()
 {
     Funclog();
     mapFontSize.insert(make_pair("大特号",22.14));
     mapFontSize.insert(make_pair("特号",18.97));
-
     mapFontSize.insert(make_pair("初号",14.82));
     mapFontSize.insert(make_pair("0",14.82));
-
     mapFontSize.insert(make_pair("小初",12.70));
-
     mapFontSize.insert(make_pair("一号",9.17));
-    mapFontSize.insert(make_pair("1",9.17));
-
+    mapFontSize.insert(make_pair("1",Pt2MM(1)));
     mapFontSize.insert(make_pair("小一",8.47));
-    mapFontSize.insert(make_pair("s1",8.47));
-
     mapFontSize.insert(make_pair("二号",7.76));
-    mapFontSize.insert(make_pair("2",7.76));
-
     mapFontSize.insert(make_pair("小二",6.35));
-    mapFontSize.insert(make_pair("s2",6.35));
-
     mapFontSize.insert(make_pair("三号",5.64));
-    mapFontSize.insert(make_pair("3",5.64));
-
     mapFontSize.insert(make_pair("小三",5.29));
-    mapFontSize.insert(make_pair("s3",5.29));
-
     mapFontSize.insert(make_pair("四号",4.94));
-    mapFontSize.insert(make_pair("4",4.94));
-
     mapFontSize.insert(make_pair("小四",4.23));
-    mapFontSize.insert(make_pair("s4",4.23));
-
     mapFontSize.insert(make_pair("五号",3.70));
-    mapFontSize.insert(make_pair("5",3.70));
-
     mapFontSize.insert(make_pair("小五",3.18));
-    mapFontSize.insert(make_pair("8",3.18));
-
-    mapFontSize.insert(make_pair("六号",2.56));
-    mapFontSize.insert(make_pair("6",2.56));
-
+    mapFontSize.insert(make_pair("六号",2.65));
     mapFontSize.insert(make_pair("小六",2.29));
-    mapFontSize.insert(make_pair("7",2.29));
-
     mapFontSize.insert(make_pair("七号",1.94));
-    mapFontSize.insert(make_pair("9",1.94));
-
     mapFontSize.insert(make_pair("八号",1.76));
-    mapFontSize.insert(make_pair("10",1.76));
 
 //    const char *argv = "/data/app/com.example.crddriver_testtool-2/lib/arm/libEvolis_Z390_LithographPrinter_armeabi-v7a.so";
 //    int argc = 1;
@@ -1835,15 +1810,15 @@ int QEvolisPrinter::PrintCard(PICINFO& inPicInfo, list<TextInfoPtr>& inTextVecto
             nDarkBottom = nDarkBottom>=(rtROI.y + rtROI.height)?nDarkBottom:(rtROI.y + rtROI.height);
 
         Mat FontROI = canvas(rtROI);
-        string strFontSize = std::to_string(var->nFontSize);
-        auto itFind = mapFontSize.find(strFontSize);
-        if (itFind == mapFontSize.end())
-        {
-            RunlogF("Invliad font size = %d,skip text:%s.\n",var->nFontSize,var->sText.c_str());
-            continue;
-        }
-        int fontHeight = (int)round(MM2Pixel(itFind->second));
-        //RunlogF("Text = %s,FontSize = %.2f, FontPixel = %d.\n",var->sText.c_str(),itFind->second,fontHeight);
+//        string strFontSize = std::to_string(var->nFontSize);
+//        auto itFind = mapFontSize.find(strFontSize);
+//        if (itFind == mapFontSize.end())
+//        {
+//            RunlogF("Invliad font size = %d,skip text:%s.\n",var->nFontSize,var->sText.c_str());
+//            continue;
+//        }
+        int fontHeight = (int)round(MM2Pixel(Pt2MM(var->nFontSize)));
+        RunlogF("Text = %s,FontSize = %.2f, FontPixel = %d.\n",var->sText.c_str(),var->nFontSize,fontHeight);
         //CVText_CN cvTextCn("/sdcard/", MM2Pixel(itFind->second),var->nFontStyle==2);
         //wchar_t szUnicode[1024] = {0};
         //mbstowcs(szUnicode,var->sText.c_str(),var->sText.size());

@@ -707,7 +707,7 @@
              <item>
               <widget class="QLineEdit" name="lineEdit_graphX">
                <property name="text">
-                <string>3</string>
+                <string>4</string>
                </property>
                <property name="placeholderText">
                 <string/>
@@ -834,7 +834,7 @@
              </size>
             </property>
             <property name="text">
-             <string>10</string>
+             <string>28</string>
             </property>
             <property name="clearButtonEnabled">
              <bool>false</bool>
