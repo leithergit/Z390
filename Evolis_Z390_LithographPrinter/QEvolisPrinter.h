@@ -8,7 +8,7 @@
 #include <map>
 #include <vector>
 #include "LithographPrinter.h"
-#define LibVer          "Z390_1.0.0.8 "
+#define LibVer          "Z390_1.0.0.9 "
 
 using namespace std;
 typedef struct CardInfo

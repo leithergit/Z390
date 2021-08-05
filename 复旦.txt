@@ -1,0 +1,49 @@
+I/Debug   ( 9004): Try to dc_cpuapduInt_hex(00A4040008A00000033301010100).
+I/debug_driver_grnius_pro_C++( 9004): UsbAdapter Clear
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage Clear
+I/debug_driver_grnius_pro_C++( 9004): UsbAdapter Write
+I/debug_driver_grnius_pro_C++( 9004): UsbAdapter Write Data : 02000000110304F90000A4040008A000000333010101D403
+I/debug_driver_grnius_pro_C++( 9004): UsbAdapter Write Data len : 24
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage Write timeout = 60000
+I/debug_driver_grnius_pro_C++( 9004): libusb_control_transfer UsbPortCManage Write Data : 02000000110304F90000A4040008A000000333010101D40300000000000000000000000000000000000000000000000000000000000000000000000000000000
+I/debug_driver_grnius_pro_C++( 9004): libusb_control_transfer UsbPortCManage Write Data len : 64
+I/debug_driver_grnius_pro_C++( 9004): UsbPortManage::write   retSend = 64
+I/debug_driver_grnius_pro_C++( 9004): UsbAdapter Read
+I/debug_driver_grnius_pro_C++( 9004): UsbAdapter Read timeout : 60000
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage read -- request len =1
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage read -- request Available() = 0
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage read -- request numTime =1
+I/debug_driver_grnius_pro_C++( 9004): libusb_interrupt_transfer  read Data : 02000000050000F96A8216030020900000000000A0F3497162034E372E313930333239DA03000000000000000000000000000000000000000000000000000000
+I/debug_driver_grnius_pro_C++( 9004): libusb_interrupt_transfer  read Data transferred_1 : 64
+I/debug_driver_grnius_pro_C++( 9004): libusb_transfer  bufferArraySize: 64
+I/debug_driver_grnius_pro_C++( 9004): libusb_transfer  currentPos : 1
+I/debug_driver_grnius_pro_C++( 9004): UsbPortManage::readDate   ret = 1
+I/debug_driver_grnius_pro_C++( 9004): UsbAdapter Read Ok : 02
+I/debug_driver_grnius_pro_C++( 9004): UsbAdapter Read
+I/debug_driver_grnius_pro_C++( 9004): UsbAdapter Read timeout : 60000
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage read -- request len =4
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage read -- request Available() = 63
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++( 9004): libusb_transfer  bufferArraySize: 64
+I/debug_driver_grnius_pro_C++( 9004): libusb_transfer  currentPos : 5
+I/debug_driver_grnius_pro_C++( 9004): UsbPortManage::readDate   ret = 4
+I/debug_driver_grnius_pro_C++( 9004): UsbAdapter Read Ok : 00000005
+I/debug_driver_grnius_pro_C++( 9004): UsbAdapter Read
+I/debug_driver_grnius_pro_C++( 9004): UsbAdapter Read timeout : 60000
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage read -- request len =7
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage read -- request Available() = 59
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++( 9004): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++( 9004): libusb_transfer  bufferArraySize: 64
+I/debug_driver_grnius_pro_C++( 9004): libusb_transfer  currentPos : 12
+I/debug_driver_grnius_pro_C++( 9004): UsbPortManage::readDate   ret = 7
+I/debug_driver_grnius_pro_C++( 9004): UsbAdapter Read Ok : 0000F96A821603
+I/Debug   ( 9004): Z390 bool Evolis_Z390_LithographPrinter::RunApdu(DEVHANDLE, std::__ndk1::string, std::__ndk1::string &)@779:
+I/Debug   ( 9004): dc_cpuapduInt_hex return 2 bytes:6A82.

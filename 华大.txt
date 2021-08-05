@@ -1,0 +1,118 @@
+I/Debug   (22871): Try to dc_cpuapduInt_hex(00A4040008A00000033301010100).
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Clear
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Clear
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Write
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Write Data : 02000000110304E30000A4040008A000000333010101CE03
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Write Data len : 24
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Write timeout = 60000
+I/debug_driver_grnius_pro_C++(22871): libusb_control_transfer UsbPortCManage Write Data : 02000000110304E30000A4040008A000000333010101CE0300000000000000000000000000000000000000000000000000000000000000000000000000000000
+I/debug_driver_grnius_pro_C++(22871): libusb_control_transfer UsbPortCManage Write Data len : 64
+I/debug_driver_grnius_pro_C++(22871): UsbPortManage::write   retSend = 64
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read timeout : 60000
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage read -- request len =1
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage read -- request Available() = 0
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage read -- request numTime =1
+I/debug_driver_grnius_pro_C++(22871): libusb_interrupt_transfer  read Data : 02000000050000E36D0089038117050F3F17040226C3001D03564E372E313930333239CD03000000000000000000000000000000000000000000000000000000
+I/debug_driver_grnius_pro_C++(22871): libusb_interrupt_transfer  read Data transferred_1 : 64
+I/debug_driver_grnius_pro_C++(22871): libusb_transfer  bufferArraySize: 64
+I/debug_driver_grnius_pro_C++(22871): libusb_transfer  currentPos : 1
+I/debug_driver_grnius_pro_C++(22871): UsbPortManage::readDate   ret = 1
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read Ok : 02
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read timeout : 60000
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage read -- request len =4
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage read -- request Available() = 63
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): libusb_transfer  bufferArraySize: 64
+I/debug_driver_grnius_pro_C++(22871): libusb_transfer  currentPos : 5
+I/debug_driver_grnius_pro_C++(22871): UsbPortManage::readDate   ret = 4
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read Ok : 00000005
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read timeout : 60000
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage read -- request len =7
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage read -- request Available() = 59
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): libusb_transfer  bufferArraySize: 64
+I/debug_driver_grnius_pro_C++(22871): libusb_transfer  currentPos : 12
+I/debug_driver_grnius_pro_C++(22871): UsbPortManage::readDate   ret = 7
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read Ok : 0000E36D008903
+I/Debug   (22871): Z390 bool Evolis_Z390_LithographPrinter::RunApdu(DEVHANDLE, std::__ndk1::string, std::__ndk1::string &)@779:
+I/Debug   (22871): dc_cpuapduInt_hex return 2 bytes:6D00.
+I/Debug   (22871): Z390 bool Evolis_Z390_LithographPrinter::RunApdu(DEVHANDLE, std::__ndk1::string, std::__ndk1::string &)@780:
+I/Debug   (22871): nRecvLen =  4 OutData = 6D00.
+I/Debug   (22871): Z390 bool Evolis_Z390_LithographPrinter::RunApdu(DEVHANDLE, std::__ndk1::string, std::__ndk1::string &)@787:
+I/Debug   (22871): The recieved data is invalid.
+I/Debug   (22871): Z390 int Evolis_Z390_LithographPrinter::ReadBankCard1(long, char *, LPVOID, LPVOID &, char *)@1050:
+I/Debug   (22871): RunApdu Failed.
+E/WifiStateMachine(  411): startDelayedScan send -> 93133 milli 10000
+E/WifiStateMachine(  411): [1,625,281,596,264 ms] noteScanstart no scan source uid -2
+E/WifiStateMachine(  411): [1,625,281,597,405 ms] noteScanEnd no scan source onTime=0
+E/WifiStateMachine(  411): wifi setScanResults statecom.android.server.wifi.WifiStateMachine$DisconnectedState@1bee2942 sup_state=SCANNING debouncing=false mConnectionRequests=1 selection=<none>
+I/Debug   (22871): Z390 int Evolis_Z390_LithographPrinter::ReadBankCard2(long, char *, LPVOID, LPVOID &, char *)@909:
+I/Debug   (22871): Z390 bool Evolis_Z390_LithographPrinter::RunApdu(DEVHANDLE, std::__ndk1::string, std::__ndk1::string &)@765:
+I/Debug   (22871): Z390 bool Evolis_Z390_LithographPrinter::RunApdu(DEVHANDLE, std::__ndk1::string, std::__ndk1::string &)@772:
+I/Debug   (22871): Try to dc_cpuapduInt_hex(00A404000E315041592E5359532E4444463031).
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Clear
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Clear
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Write
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Write Data : 02000000170304E40000A404000E315041592E5359532E44444630313F03
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Write Data len : 30
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Write timeout = 60000
+I/debug_driver_grnius_pro_C++(22871): libusb_control_transfer UsbPortCManage Write Data : 02000000170304E40000A404000E315041592E5359532E44444630313F0300000000000000000000000000000000000000000000000000000000000000000000
+I/debug_driver_grnius_pro_C++(22871): libusb_control_transfer UsbPortCManage Write Data len : 64
+I/debug_driver_grnius_pro_C++(22871): UsbPortManage::write   retSend = 64
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read timeout : 60000
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage read -- request len =1
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage read -- request Available() = 0
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage read -- request numTime =1
+I/debug_driver_grnius_pro_C++(22871): libusb_interrupt_transfer  read Data : 02000000050000E46D008E038117050F3F17040226C3001D03564E372E313930333239CD03000000000000000000000000000000000000000000000000000000
+I/debug_driver_grnius_pro_C++(22871): libusb_interrupt_transfer  read Data transferred_1 : 64
+I/debug_driver_grnius_pro_C++(22871): libusb_transfer  bufferArraySize: 64
+I/debug_driver_grnius_pro_C++(22871): libusb_transfer  currentPos : 1
+I/debug_driver_grnius_pro_C++(22871): UsbPortManage::readDate   ret = 1
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read Ok : 02
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read timeout : 60000
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage read -- request len =4
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage read -- request Available() = 63
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): libusb_transfer  bufferArraySize: 64
+I/debug_driver_grnius_pro_C++(22871): libusb_transfer  currentPos : 5
+I/debug_driver_grnius_pro_C++(22871): UsbPortManage::readDate   ret = 4
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read Ok : 00000005
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read timeout : 60000
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage read -- request len =7
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage read -- request Available() = 59
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): UsbPortCManage Available
+I/debug_driver_grnius_pro_C++(22871): libusb_transfer  bufferArraySize: 64
+I/debug_driver_grnius_pro_C++(22871): libusb_transfer  currentPos : 12
+I/debug_driver_grnius_pro_C++(22871): UsbPortManage::readDate   ret = 7
+I/debug_driver_grnius_pro_C++(22871): UsbAdapter Read Ok : 0000E46D008E03
+I/Debug   (22871): Z390 bool Evolis_Z390_LithographPrinter::RunApdu(DEVHANDLE, std::__ndk1::string, std::__ndk1::string &)@779:
+I/Debug   (22871): dc_cpuapduInt_hex return 2 bytes:6D00.
+I/Debug   (22871): Z390 bool Evolis_Z390_LithographPrinter::RunApdu(DEVHANDLE, std::__ndk1::string, std::__ndk1::string &)@780:
+I/Debug   (22871): nRecvLen =  4 OutData = 6D00.
+I/Debug   (22871): Z390 bool Evolis_Z390_LithographPrinter::RunApdu(DEVHANDLE, std::__ndk1::string, std::__ndk1::string &)@787:
+I/Debug   (22871): The recieved data is invalid.
+I/Debug   (22871): Z390 int Evolis_Z390_LithographPrinter::ReadBankCard2(long, char *, LPVOID, LPVOID &, char *)@918:
+I/Debug   (22871): RunApdu Failed.
+E/WifiStateMachine(  411): startDelayedScan send -> 9313

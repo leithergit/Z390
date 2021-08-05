@@ -1,0 +1,27 @@
+Current ThreadID:af461600####
+I/Debug   ( 6153): Z390_1.0.0.31 int QEvolisPrinter::On_Print_Dispense(long, int, int, char *)@1037:Try to evolis_set_input_tray(EVOLIS_IT_FEEDER).
+I/Debug   ( 6153): Z390_1.0.0.31 int QEvolisPrinter::On_Print_Dispense(long, int, int, char *)@1045:evolis_set_input_tray(EVOLIS_IT_FEEDER) Succeed.
+I/Debug   ( 6153): Z390_1.0.0.31 int QEvolisPrinter::On_Print_Dispense(long, int, int, char *)@1047:Try to evolis_set_card_pos(EVOLIS_CP_INSERT).
+E/WifiStateMachine(  411): startDelayedScan send -> 94197 milli 10000
+E/WifiStateMachine(  411): [1,625,292,243,722 ms] noteScanstart no scan source uid -2
+E/WifiStateMachine(  411): [1,625,292,244,857 ms] noteScanEnd no scan source onTime=0
+E/WifiStateMachine(  411): wifi setScanResults statecom.android.server.wifi.WifiStateMachine$DisconnectedState@1bee2942 sup_state=SCANNING debouncing=false mConnectionRequests=1 selection=<none>
+E/WifiStateMachine(  411): startDelayedScan send -> 94198 milli 10000
+E/WifiStateMachine(  411): [1,625,292,253,732 ms] noteScanstart no scan source uid -2
+E/WifiStateMachine(  411): [1,625,292,254,871 ms] noteScanEnd no scan source onTime=0
+E/WifiStateMachine(  411): wifi setScanResults statecom.android.server.wifi.WifiStateMachine$DisconnectedState@1bee2942 sup_state=SCANNING debouncing=false mConnectionRequests=1 selection=<none>
+E/WifiStateMachine(  411): startDelayedScan send -> 94199 milli 10000
+E/WifiStateMachine(  411): [1,625,292,263,741 ms] noteScanstart no scan source uid -2
+E/WifiStateMachine(  411): [1,625,292,264,881 ms] noteScanEnd no scan source onTime=0
+E/WifiStateMachine(  411): wifi setScanResults statecom.android.server.wifi.WifiStateMachine$DisconnectedState@1bee2942 sup_state=SCANNING debouncing=false mConnectionRequests=1 selection=<none>
+I/Debug   ( 6153): Z390_1.0.0.31 int QEvolisPrinter::On_Print_Dispense(long, int, int, char *)@1052:Failed in evolis_set_card_pos(EVOLIS_CP_INSERT).
+I/Debug   ( 6153): Z390_1.0.0.31 int QEvolisPrinter::Print_DispenseSync(long, int, int, char *)@632:Task complete,Result = 1,RcCode = 0001.
+I/Debug   ( 6153): Failed in Print_Dispense:0001
+E/WifiStateMachine(  411): startDelayedScan send -> 94200 milli 10000
+E/WifiStateMachine(  411): [1,625,292,273,748 ms] noteScanstart no scan source uid -2
+E/WifiStateMachine(  411): [1,625,292,274,885 ms] noteScanEnd no scan source onTime=0
+E/WifiStateMachine(  411): wifi setScanResults statecom.android.server.wifi.WifiStateMachine$DisconnectedState@1bee2942 sup_state=SCANNING debouncing=false mConnectionRequests=1 selection=<none>
+E/WifiStateMachine(  411): startDelayedScan send -> 94201 milli 10000
+E/WifiStateMachine(  411): [1,625,292,283,751 ms] noteScanstart no scan source uid -2
+E/WifiStateMachine(  411): [1,625,292,284,884 ms] noteScanEnd no scan source onTime=0
+E/WifiStateMachine(  411): wifi setScanResults statecom.android.server.wifi.WifiStateMachine$DisconnectedState@1bee2942 sup_state=SCANNING debouncing=fal

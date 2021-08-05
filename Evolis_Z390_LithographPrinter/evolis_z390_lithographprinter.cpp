@@ -555,7 +555,7 @@ extern "C"
         Q_UNUSED(lTimeout);
         Funclog();
         if (m_hReader)
-            dc_Close();
+            dc_cpudown(m_hReader);
         strcpy(pszRcCode, "0000");
         return 0;
     }
